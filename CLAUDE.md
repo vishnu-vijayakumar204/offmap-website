@@ -29,6 +29,18 @@
 - Never commit directly to main
 - Always create a PR for review before merging
 
+### Git Rules
+- Never auto-create branches with claude/ prefix
+- Always work on the current active branch unless 
+  explicitly told to create a new one
+- When told to create a branch, follow this naming:
+  feature/homepage
+  feature/trip-listing
+  fix/nav-mobile
+  chore/dependencies
+- Always confirm which branch you're on before 
+  making any commits
+
 ### Before Marking Any Task Done
 - Test on mobile (375px) AND desktop (1440px)
 - Check loading states exist
