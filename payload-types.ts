@@ -69,6 +69,14 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    locations: Location;
+    'trip-types': TripType;
+    trips: Trip;
+    batches: Batch;
+    stays: Stay;
+    enquiries: Enquiry;
+    'blog-posts': BlogPost;
+    reviews: Review;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +86,14 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    locations: Record<string, unknown>;
+    'trip-types': Record<string, unknown>;
+    trips: Record<string, unknown>;
+    batches: Record<string, unknown>;
+    stays: Record<string, unknown>;
+    enquiries: Record<string, unknown>;
+    'blog-posts': Record<string, unknown>;
+    reviews: Record<string, unknown>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -160,6 +176,102 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+// OffMap collection type stubs — will be fully generated once Node.js is upgraded
+export interface Location {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  heroImage?: string | Media | null;
+  accentColor?: string | null;
+  active: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface TripType {
+  id: string;
+  name: string;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Trip {
+  id: string;
+  title: string;
+  slug: string;
+  location: string | Location;
+  tripType: string | TripType;
+  description: Record<string, unknown>;
+  highlights?: { highlight: string; id?: string | null }[] | null;
+  inclusions?: { item: string; id?: string | null }[] | null;
+  exclusions?: { item: string; id?: string | null }[] | null;
+  heroImage: string | Media;
+  gallery?: { image: string | Media; id?: string | null }[] | null;
+  price: number;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Batch {
+  id: string;
+  trip: string | Trip;
+  startDate: string;
+  endDate: string;
+  seatsTotal: number;
+  seatsBooked: number;
+  status: 'open' | 'full' | 'cancelled';
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Stay {
+  id: string;
+  title: string;
+  slug: string;
+  location: string | Location;
+  description: Record<string, unknown>;
+  heroImage: string | Media;
+  gallery?: { image: string | Media; id?: string | null }[] | null;
+  pricePerNight: number;
+  activities?: { activity: string; id?: string | null }[] | null;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Enquiry {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  tripType: 'group-trip' | 'school-trip' | 'retreat' | 'day-trip';
+  message: string;
+  source: 'trips' | 'stays';
+  status: 'new' | 'contacted' | 'closed';
+  updatedAt: string;
+  createdAt: string;
+}
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  content: Record<string, unknown>;
+  heroImage?: string | Media | null;
+  location?: string | Location | null;
+  publishedAt?: string | null;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Review {
+  id: string;
+  reviewerName: string;
+  reviewerPhoto?: string | Media | null;
+  tripName: string;
+  rating: number;
+  reviewText: string;
+  featured: boolean;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
