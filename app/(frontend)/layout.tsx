@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google"
 import { DM_Sans } from "next/font/google"
 import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider"
 import Navbar from "@/components/layout/Navbar"
+import Footer from "@/components/layout/Footer"
 import "./globals.css"
 
 const poppins = Poppins({
@@ -32,6 +33,7 @@ export default function RootLayout({
         <SmoothScrollProvider>
           <Navbar />
           {children}
+          <Footer />
         </SmoothScrollProvider>
       </body>
     </html>
