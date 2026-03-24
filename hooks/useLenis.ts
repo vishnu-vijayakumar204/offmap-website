@@ -1,0 +1,35 @@
+'use client'
+
+import { useEffect } from 'react'
+import Lenis from '@studio-freight/lenis'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { registerGSAP } from '@/lib/animations'
+
+export function useLenis(): void {
+  useEffect(() => {
+    registerGSAP()
+
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches
+
+    if (prefersReducedMotion) return
+
+    const lenis = new Lenis()
+
+    lenis.on('scroll', ScrollTrigger.update)
+
+    function onTick(time: number): void {
+      lenis.raf(time * 1000)
+    }
+
+    gsap.ticker.add(onTick)
+    gsap.ticker.lagSmoothing(0)
+
+    return () => {
+      lenis.destroy()
+      gsap.ticker.remove(onTick)
+    }
+  }, [])
+}
