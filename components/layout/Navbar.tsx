@@ -5,15 +5,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { NAV_LINKS } from '@/lib/constants'
 import { buttonVariants } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { DURATION_FAST, EASE_OUT } from '@/lib/animations'
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -22,17 +17,15 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
 
-  // Scroll detection via ScrollTrigger
+  // Scroll detection — plain scroll event for reliable initial state
   useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const trigger = ScrollTrigger.create({
-      start: 'top -72',
-      onEnter: () => setIsScrolled(true),
-      onLeaveBack: () => setIsScrolled(false),
-    })
-
-    return () => trigger.kill()
+    function handleScroll() {
+      setIsScrolled(window.scrollY > 72)
+    }
+    // Run once on mount to catch pre-scrolled state
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   // Lock body scroll when mobile menu is open

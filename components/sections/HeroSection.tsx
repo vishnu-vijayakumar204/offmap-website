@@ -8,7 +8,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { buttonVariants } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
-import { fadeInUp, registerGSAP, STAGGER_DEFAULT, EASE_OUT } from '@/lib/animations'
+import { registerGSAP, EASE_OUT } from '@/lib/animations'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -27,6 +27,10 @@ const STATS: Stat[] = [
   { target: 4.9, suffix: '★', label: 'Rating', decimals: 1 },
 ]
 
+// Headline split into individual words
+const LINE1_WORDS = ['Travel', 'slow,', 'go']
+const LINE2_WORD = 'Offmap!'
+
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const imgWrapperRef = useRef<HTMLDivElement>(null)
@@ -35,7 +39,6 @@ export function HeroSection() {
   const subtextRef = useRef<HTMLParagraphElement>(null)
   const buttonsRef = useRef<HTMLDivElement>(null)
   const statsRef = useRef<HTMLDivElement>(null)
-  // One ref per stat display span
   const stat0Ref = useRef<HTMLSpanElement>(null)
   const stat1Ref = useRef<HTMLSpanElement>(null)
   const stat2Ref = useRef<HTMLSpanElement>(null)
@@ -46,22 +49,62 @@ export function HeroSection() {
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    // ── Entrance stagger ─────────────────────────────────────────
+    // ── Cinematic entrance sequence ───────────────────────────────────
     if (!reduced) {
-      const stagger = STAGGER_DEFAULT
-      const elements: [React.RefObject<Element | null>, number][] = [
-        [labelRef, 0],
-        [headlineRef, stagger * 1],
-        [subtextRef, stagger * 2],
-        [buttonsRef, stagger * 3],
-        [statsRef, stagger * 4],
-      ]
-      elements.forEach(([ref, delay]) => {
-        if (ref.current) fadeInUp(ref.current, { delay })
+      // Select all inner word spans via data attribute
+      const wordSpans = headlineRef.current
+        ? Array.from(headlineRef.current.querySelectorAll<HTMLElement>('[data-word]'))
+        : []
+
+      // Set everything hidden before the timeline starts
+      gsap.set(labelRef.current, { opacity: 0, y: 10 })
+      gsap.set(wordSpans, { y: '100%' })
+      gsap.set(subtextRef.current, { opacity: 0, y: 20 })
+      gsap.set(buttonsRef.current, { opacity: 0, y: 20 })
+      gsap.set(statsRef.current, { opacity: 0, y: 20 })
+
+      const tl = gsap.timeline({ delay: 0.3 })
+
+      // 1. Label fades in first
+      tl.to(labelRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out',
       })
+
+      // 2. Words rise up one by one (starts 0.1s before label finishes)
+      if (wordSpans.length) {
+        tl.to(
+          wordSpans,
+          { y: '0%', duration: 0.75, ease: 'power3.out', stagger: 0.08 },
+          '-=0.1'
+        )
+      }
+
+      // 3. Subtext fades in (overlaps last 0.3s of headline)
+      tl.to(
+        subtextRef.current,
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+        '-=0.3'
+      )
+
+      // 4. Buttons (overlaps with subtext)
+      tl.to(
+        buttonsRef.current,
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
+        '-=0.4'
+      )
+
+      // 5. Stats bar (overlaps with buttons)
+      tl.to(
+        statsRef.current,
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
+        '-=0.4'
+      )
     }
 
-    // ── Hero parallax ─────────────────────────────────────────────
+    // ── Hero parallax ─────────────────────────────────────────────────
     if (!reduced && imgWrapperRef.current && sectionRef.current) {
       gsap.to(imgWrapperRef.current, {
         yPercent: 20,
@@ -75,7 +118,7 @@ export function HeroSection() {
       })
     }
 
-    // ── Counter animation ─────────────────────────────────────────
+    // ── Counter animation ─────────────────────────────────────────────
     if (!reduced && statsRef.current) {
       STATS.forEach((stat, i) => {
         const el = statRefs[i].current
@@ -92,10 +135,9 @@ export function HeroSection() {
             once: true,
           },
           onUpdate() {
-            el.textContent =
-              stat.decimals
-                ? obj.val.toFixed(stat.decimals)
-                : Math.round(obj.val).toString()
+            el.textContent = stat.decimals
+              ? obj.val.toFixed(stat.decimals)
+              : Math.round(obj.val).toString()
           },
         })
       })
@@ -122,13 +164,18 @@ export function HeroSection() {
         />
       </div>
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/20" />
+      {/* Bottom-up gradient — deepens content area */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10 pointer-events-none" />
+
+      {/* Top-down gradient — ensures navbar text is legible over any image */}
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/65 to-transparent pointer-events-none" />
 
       {/* Main content */}
       <div className="relative z-10 flex-1 flex items-center">
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="max-w-2xl">
+
+            {/* Label — fades in first */}
             <span
               ref={labelRef}
               className="inline-block text-yellow text-sm font-medium tracking-widest uppercase mb-4"
@@ -136,15 +183,34 @@ export function HeroSection() {
               Travel Differently
             </span>
 
+            {/* Headline — word-by-word cinematic reveal */}
             <h1
               ref={headlineRef}
-              className="font-heading font-bold text-white text-4xl md:text-6xl lg:text-7xl leading-tight mb-6"
+              className="font-heading font-bold text-white text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6"
             >
-              Travel slow, go
-              <br />
-              <span className="text-yellow">Offmap!</span>
+              {/* Line 1: individual word slots */}
+              <span className="flex flex-wrap">
+                {LINE1_WORDS.map((word) => (
+                  <span
+                    key={word}
+                    className="overflow-hidden inline-block mr-[0.22em] last:mr-0"
+                  >
+                    <span className="inline-block" data-word="">
+                      {word}
+                    </span>
+                  </span>
+                ))}
+              </span>
+
+              {/* Line 2: yellow word */}
+              <span className="overflow-hidden inline-block">
+                <span className="inline-block text-yellow" data-word="">
+                  {LINE2_WORD}
+                </span>
+              </span>
             </h1>
 
+            {/* Subtext */}
             <p
               ref={subtextRef}
               className="text-white/80 text-lg md:text-xl max-w-xl mb-8 leading-relaxed"
@@ -153,6 +219,7 @@ export function HeroSection() {
               rushing, sit with a view longer, and experience places deeply.
             </p>
 
+            {/* CTA Buttons */}
             <div ref={buttonsRef} className="flex flex-wrap gap-4">
               <Link
                 href="/destinations"

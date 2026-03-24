@@ -5,6 +5,7 @@ import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider"
 import Navbar from "@/components/layout/Navbar"
 import Footer from "@/components/layout/Footer"
 import { ScrollProgressBar } from "@/components/ui/ScrollProgressBar"
+import { PageTransition } from "@/components/layout/PageTransition"
 import "./globals.css"
 
 const poppins = Poppins({
@@ -34,7 +35,9 @@ export default function RootLayout({
         <SmoothScrollProvider>
           <ScrollProgressBar />
           <Navbar />
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
           <Footer />
         </SmoothScrollProvider>
       </body>
