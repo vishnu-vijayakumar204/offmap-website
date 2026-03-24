@@ -83,7 +83,10 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="font-heading font-bold text-xl text-dark hover:opacity-80 transition-opacity"
+            className={cn(
+              'font-heading font-bold text-xl hover:opacity-80 transition-colors duration-300',
+              isScrolled ? 'text-dark' : 'text-white'
+            )}
             onClick={closeMobileMenu}
           >
             OffMap India
@@ -97,9 +100,13 @@ export default function Navbar() {
                 href={link.href}
                 className={cn(
                   'font-body text-sm transition-colors duration-200 relative pb-0.5',
-                  isActive(link.href)
-                    ? 'text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-yellow after:rounded-full'
-                    : 'text-dark hover:text-primary'
+                  isScrolled
+                    ? isActive(link.href)
+                      ? 'text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-yellow after:rounded-full'
+                      : 'text-dark hover:text-primary'
+                    : isActive(link.href)
+                      ? 'text-yellow after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-yellow after:rounded-full'
+                      : 'text-white hover:text-yellow'
                 )}
               >
                 {link.label}
@@ -109,14 +116,25 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div className="hidden md:block">
-            <Link href="/contact" className={cn(buttonVariants({ variant: 'primary', size: 'sm' }))}>
+            <Link
+              href="/contact"
+              className={cn(
+                isScrolled
+                  ? buttonVariants({ variant: 'primary', size: 'sm' })
+                  : buttonVariants({ variant: 'outline', size: 'sm' }),
+                !isScrolled && 'border-white text-white hover:bg-white hover:text-dark'
+              )}
+            >
               Plan Your Trip
             </Link>
           </div>
 
           {/* Mobile Hamburger */}
           <button
-            className="md:hidden flex items-center justify-center w-11 h-11 text-dark"
+            className={cn(
+              'md:hidden flex items-center justify-center w-11 h-11 transition-colors duration-300',
+              isScrolled ? 'text-dark' : 'text-white'
+            )}
             onClick={() => setIsMobileOpen((prev) => !prev)}
             aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isMobileOpen}
