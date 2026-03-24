@@ -8,9 +8,6 @@ import { buttonVariants } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { fadeInUp, STAGGER_DEFAULT } from '@/lib/animations'
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=1920&q=80'
-
 const STATS = [
   { value: '500+', label: 'Travelers' },
   { value: '20+', label: 'Destinations' },
@@ -45,7 +42,7 @@ export function HeroSection() {
     <section className="relative w-full h-screen min-h-[600px] flex flex-col">
       {/* Background image */}
       <Image
-        src={HERO_IMAGE}
+        src="/hero.jpeg"
         alt="Mountain landscape in Himachal Pradesh"
         fill
         priority
