@@ -109,8 +109,8 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div className="hidden md:block">
-            <Link href="/trips" className={cn(buttonVariants({ variant: 'primary', size: 'sm' }))}>
-              Book Now
+            <Link href="/contact" className={cn(buttonVariants({ variant: 'primary', size: 'sm' }))}>
+              Plan Your Trip
             </Link>
           </div>
 
@@ -175,11 +175,11 @@ export default function Navbar() {
         {/* Mobile CTA */}
         <div className="px-4 py-6 border-t border-border">
           <Link
-            href="/trips"
+            href="/contact"
             onClick={closeMobileMenu}
             className={cn(buttonVariants({ variant: 'primary', size: 'md' }), 'w-full')}
           >
-            Book Now
+            Plan Your Trip
           </Link>
         </div>
       </div>

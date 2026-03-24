@@ -62,7 +62,7 @@ export function HeroSection() {
               ref={labelRef}
               className="inline-block text-yellow text-sm font-medium tracking-widest uppercase mb-4"
             >
-              Adventure Awaits
+              Travel Differently
             </span>
 
             {/* Headline */}
@@ -70,9 +70,9 @@ export function HeroSection() {
               ref={headlineRef}
               className="font-heading font-bold text-white text-4xl md:text-6xl lg:text-7xl leading-tight mb-6"
             >
-              Go Where The
+              Travel slow, go
               <br />
-              <span className="text-yellow">Map</span> Ends
+              <span className="text-yellow">Offmap!</span>
             </h1>
 
             {/* Subtext */}
@@ -80,26 +80,26 @@ export function HeroSection() {
               ref={subtextRef}
               className="text-white/80 text-lg md:text-xl max-w-xl mb-8 leading-relaxed"
             >
-              Group trips, stays, retreats and day experiences across Himachal
-              Pradesh &amp; Rajasthan
+              OffMap is for people who want to travel slower. To hike without
+              rushing, sit with a view longer, and experience places deeply.
             </p>
 
             {/* CTA Buttons */}
             <div ref={buttonsRef} className="flex flex-wrap gap-4">
               <Link
-                href="/trips"
+                href="/destinations"
                 className={cn(buttonVariants({ variant: 'primary', size: 'lg' }))}
               >
-                Explore Trips
+                Explore Destinations
               </Link>
               <Link
-                href="/about#enquiry"
+                href="/contact"
                 className={cn(
                   buttonVariants({ variant: 'outline', size: 'lg' }),
                   'border-white text-white hover:bg-white hover:text-dark'
                 )}
               >
-                Enquire Now
+                Plan Your Trip
               </Link>
             </div>
           </div>
