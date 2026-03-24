@@ -6,6 +6,7 @@ import { FeaturedExperiencesSection } from '@/components/sections/FeaturedExperi
 import { StaysTeaserSection } from '@/components/sections/StaysTeaserSection'
 import { StudentProgramSection } from '@/components/sections/StudentProgramSection'
 import { BlogsTeaserSection } from '@/components/sections/BlogsTeaserSection'
+import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { FinalCtaSection } from '@/components/sections/FinalCtaSection'
 
 export default function HomePage() {
@@ -19,6 +20,7 @@ export default function HomePage() {
       <StaysTeaserSection />
       <StudentProgramSection />
       <BlogsTeaserSection />
+      <TestimonialsSection />
       <FinalCtaSection />
     </main>
   )

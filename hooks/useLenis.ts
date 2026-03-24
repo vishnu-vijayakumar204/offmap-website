@@ -16,7 +16,13 @@ export function useLenis(): void {
 
     if (prefersReducedMotion) return
 
-    const lenis = new Lenis()
+    const lenis = new Lenis({
+      lerp: 0.1,
+      smoothWheel: true,
+      wheelMultiplier: 1.2,
+      touchMultiplier: 2,
+      infinite: false,
+    })
 
     lenis.on('scroll', ScrollTrigger.update)
 

@@ -25,13 +25,18 @@ export function StaysTeaserSection() {
         ref={contentRef}
         className="relative z-10 max-w-7xl mx-auto px-4 text-center"
       >
-        <h2 className="font-heading font-bold text-white text-3xl md:text-5xl mb-6 max-w-2xl mx-auto">
-          People like you, find places like this.
+        <h2 className="font-heading font-bold text-white text-3xl md:text-5xl mb-6 max-w-3xl mx-auto leading-tight">
+          Where you stay decides how deeply you experience a place.
         </h2>
-        <p className="text-white/70 text-lg max-w-xl mx-auto mb-8">
-          We don&apos;t pick stays from booking sites. Every place we recommend,
-          we&apos;ve stayed in. Small, soulful, and connected to the place.
+        <p className="text-white/70 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
+          Different stories. Different reasons. Same feeling when they arrive.
+          A sense of slowing down. Of belonging, even if it&apos;s just for a few days.
         </p>
+        <ul className="flex flex-wrap justify-center gap-x-8 gap-y-2 mb-10 text-white/60 text-sm">
+          <li className="flex items-center gap-2"><span className="text-yellow">—</span> Fewer stays, better ones</li>
+          <li className="flex items-center gap-2"><span className="text-yellow">—</span> Locally rooted</li>
+          <li className="flex items-center gap-2"><span className="text-yellow">—</span> Experience-first</li>
+        </ul>
         <Link
           href="/stays"
           className={cn(buttonVariants({ variant: 'secondary', size: 'lg' }))}

@@ -14,7 +14,7 @@ export function useScrollAnimation(
   ref: RefObject<Element | null>,
   options: ScrollAnimationOptions = {}
 ): void {
-  const { delay = 0, duration = DURATION_DEFAULT } = options
+  const { delay = 0, duration = 0.5 } = options
 
   useEffect(() => {
     registerGSAP()
@@ -31,7 +31,7 @@ export function useScrollAnimation(
     const ctx = gsap.context(() => {
       gsap.fromTo(
         element,
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
@@ -40,7 +40,7 @@ export function useScrollAnimation(
           ease: EASE_OUT,
           scrollTrigger: {
             trigger: element,
-            start: 'top 85%',
+            start: 'top 92%',
             toggleActions: 'play none none none',
           },
         }

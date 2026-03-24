@@ -9,14 +9,15 @@ import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 
 const ROUTE_IMAGES: Record<string, string> = {
   'bir-barot':
-    'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80',
+    'https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=600&q=80',
   'rajgundha-valley':
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
+    'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80',
   'shangarh-raghupur-fort':
-    'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600&q=80',
-  jawai: 'https://images.unsplash.com/photo-1477587458883-47145ed6979e?w=600&q=80',
+    'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80',
+  jawai:
+    'https://images.unsplash.com/photo-1477587458883-47145ed31459?w=600&q=80',
   'kasar-devi-khaliya-top':
-    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+    'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80',
 }
 
 function toTitleCase(str: string): string {

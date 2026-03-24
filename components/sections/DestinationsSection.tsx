@@ -12,11 +12,11 @@ const DESTINATION_IMAGES: Record<string, string> = {
   'himachal-pradesh':
     'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&q=80',
   rajasthan:
-    'https://images.unsplash.com/photo-1477587458883-47145ed6979e?w=800&q=80',
+    'https://images.unsplash.com/photo-1477587458883-47145ed31459?w=800&q=80',
   uttarakhand:
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+    'https://images.unsplash.com/photo-1600097454296-12f6d5c3b4d9?w=800&q=80',
   kashmir:
-    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&q=80',
 }
 
 export function DestinationsSection() {
