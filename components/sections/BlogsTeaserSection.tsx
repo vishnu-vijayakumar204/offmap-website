@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Card, CardBody } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
-import { useScrollAnimation } from '@/hooks/useScrollAnimation'
+import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 
 interface BlogPost {
   title: string
@@ -30,7 +30,7 @@ const BLOG_POSTS: BlogPost[] = [
     category: 'Rajasthan',
     date: 'February 2025',
     image:
-      'https://images.unsplash.com/photo-1477587458883-47145ed6979e?w=600&q=80',
+      'https://assets.myntassets.com/assets/images/2026/MARCH/24/cPwCjdUZ_9141407da6e44b8993e93958dda3b3cd.jpg',
     href: '/blogs/jawai-rajasthan',
   },
   {
@@ -45,7 +45,7 @@ const BLOG_POSTS: BlogPost[] = [
 
 export function BlogsTeaserSection() {
   const gridRef = useRef<HTMLDivElement>(null)
-  useScrollAnimation(gridRef)
+  useStaggerReveal(gridRef)
 
   return (
     <section className="bg-white py-16 md:py-24">

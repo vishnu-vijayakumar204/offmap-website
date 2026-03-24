@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import { Star } from 'lucide-react'
 import { Card, CardBody } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
-import { useScrollAnimation } from '@/hooks/useScrollAnimation'
+import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 
 interface Testimonial {
   name: string
@@ -49,7 +49,7 @@ function StarRating() {
 
 export function TestimonialsSection() {
   const gridRef = useRef<HTMLDivElement>(null)
-  useScrollAnimation(gridRef)
+  useStaggerReveal(gridRef)
 
   return (
     <section className="bg-offwhite py-16 md:py-24">

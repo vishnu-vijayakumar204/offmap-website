@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import Link from 'next/link'
 import { Users, Zap, Compass, Star, ArrowRight, type LucideIcon } from 'lucide-react'
 import { EXPERIENCES } from '@/lib/constants'
-import { useScrollAnimation } from '@/hooks/useScrollAnimation'
+import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 import { cn } from '@/lib/utils'
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -16,7 +16,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 export function QuickNavSection() {
   const cardsRef = useRef<HTMLDivElement>(null)
-  useScrollAnimation(cardsRef)
+  useStaggerReveal(cardsRef)
 
   return (
     <section className="bg-primary py-16 md:py-24">

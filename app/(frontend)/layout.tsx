@@ -4,6 +4,7 @@ import { DM_Sans } from "next/font/google"
 import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider"
 import Navbar from "@/components/layout/Navbar"
 import Footer from "@/components/layout/Footer"
+import { ScrollProgressBar } from "@/components/ui/ScrollProgressBar"
 import "./globals.css"
 
 const poppins = Poppins({
@@ -31,6 +32,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} ${dmSans.variable} antialiased`}>
         <SmoothScrollProvider>
+          <ScrollProgressBar />
           <Navbar />
           {children}
           <Footer />

@@ -5,27 +5,27 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { LOCATIONS } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
-import { useScrollAnimation } from '@/hooks/useScrollAnimation'
+import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 import { cn } from '@/lib/utils'
 
 const DESTINATION_IMAGES: Record<string, string> = {
   'himachal-pradesh':
     'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&q=80',
   rajasthan:
-    'https://images.unsplash.com/photo-1477587458883-47145ed31459?w=800&q=80',
+    'https://assets.myntassets.com/assets/images/2026/MARCH/24/JCyziwzs_6ee01729919d469899c817cec3ea5cd8.jpg',
   uttarakhand:
-    'https://images.unsplash.com/photo-1600097454296-12f6d5c3b4d9?w=800&q=80',
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
   kashmir:
-    'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&q=80',
+    'https://assets.myntassets.com/assets/images/2026/MARCH/24/D2v6kHyH_d1c879ce666440a292c02cf334ea2085.jpg',
 }
 
 export function DestinationsSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
-  useScrollAnimation(sectionRef)
+  useStaggerReveal(sectionRef)
 
   return (
     <section className="bg-offwhite py-16 md:py-24">
-      <div ref={sectionRef} className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4">
         <p className="text-primary text-xs uppercase tracking-widest mb-3">
           DESTINATIONS
         </p>
@@ -33,7 +33,7 @@ export function DestinationsSection() {
           Pick a direction. We&apos;ll show you a different side of it.
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div ref={sectionRef} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {LOCATIONS.map((location) => (
             <Link
               key={location.slug}
