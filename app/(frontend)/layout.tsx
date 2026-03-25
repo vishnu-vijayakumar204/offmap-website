@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import { DM_Sans } from "next/font/google"
+import { Fraunces } from "next/font/google"
 import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider"
 import Navbar from "@/components/layout/Navbar"
 import Footer from "@/components/layout/Footer"
@@ -19,6 +20,12 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 })
 
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
+  variable: "--font-fraunces",
+})
+
 export const metadata: Metadata = {
   title: "OffMap India",
   description: "Go Where The Map Ends",
@@ -31,7 +38,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} ${dmSans.variable} antialiased`}>
+      <body className={`${poppins.variable} ${dmSans.variable} ${fraunces.variable} antialiased`}>
         <SmoothScrollProvider>
           <ScrollProgressBar />
           <Navbar />

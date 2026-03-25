@@ -16,13 +16,13 @@ export function FinalCtaSection() {
         ref={contentRef}
         className="max-w-3xl mx-auto px-4 text-center"
       >
-        <h2 className="font-heading font-bold text-dark text-3xl md:text-5xl leading-tight mb-8">
+        <h2 className="font-display font-bold text-dark text-3xl md:text-5xl leading-tight mb-8">
           You don&apos;t need a fixed plan. Just the intention to go somewhere
           different.
         </h2>
         <Link
           href="/contact"
-          className={cn(buttonVariants({ variant: 'secondary', size: 'lg' }))}
+          className={cn(buttonVariants({ variant: 'dark', size: 'lg' }))}
         >
           Plan Your Journey
         </Link>

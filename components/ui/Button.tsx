@@ -14,6 +14,8 @@ export const buttonVariants = cva(
           'border-2 border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-primary',
         ghost:
           'text-dark hover:bg-border focus-visible:ring-border',
+        dark:
+          'bg-dark text-white hover:bg-dark/80 focus-visible:ring-dark',
       },
       size: {
         sm: 'h-9 px-4 text-sm rounded-lg',

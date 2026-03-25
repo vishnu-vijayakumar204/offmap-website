@@ -7,6 +7,7 @@ import { ChevronDown } from 'lucide-react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { buttonVariants } from '@/components/ui/Button'
+import { SearchBar } from '@/components/ui/SearchBar'
 import { cn } from '@/lib/utils'
 import { registerGSAP, EASE_OUT } from '@/lib/animations'
 
@@ -37,6 +38,7 @@ export function HeroSection() {
   const labelRef = useRef<HTMLSpanElement>(null)
   const headlineRef = useRef<HTMLHeadingElement>(null)
   const subtextRef = useRef<HTMLParagraphElement>(null)
+  const searchRef = useRef<HTMLDivElement>(null)
   const buttonsRef = useRef<HTMLDivElement>(null)
   const statsRef = useRef<HTMLDivElement>(null)
   const stat0Ref = useRef<HTMLSpanElement>(null)
@@ -51,29 +53,21 @@ export function HeroSection() {
 
     // ── Cinematic entrance sequence ───────────────────────────────────
     if (!reduced) {
-      // Select all inner word spans via data attribute
       const wordSpans = headlineRef.current
         ? Array.from(headlineRef.current.querySelectorAll<HTMLElement>('[data-word]'))
         : []
 
-      // Set everything hidden before the timeline starts
       gsap.set(labelRef.current, { opacity: 0, y: 10 })
       gsap.set(wordSpans, { y: '100%' })
       gsap.set(subtextRef.current, { opacity: 0, y: 20 })
+      gsap.set(searchRef.current, { opacity: 0, y: 20 })
       gsap.set(buttonsRef.current, { opacity: 0, y: 20 })
       gsap.set(statsRef.current, { opacity: 0, y: 20 })
 
       const tl = gsap.timeline({ delay: 0.3 })
 
-      // 1. Label fades in first
-      tl.to(labelRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        ease: 'power2.out',
-      })
+      tl.to(labelRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' })
 
-      // 2. Words rise up one by one (starts 0.1s before label finishes)
       if (wordSpans.length) {
         tl.to(
           wordSpans,
@@ -82,26 +76,10 @@ export function HeroSection() {
         )
       }
 
-      // 3. Subtext fades in (overlaps last 0.3s of headline)
-      tl.to(
-        subtextRef.current,
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
-        '-=0.3'
-      )
-
-      // 4. Buttons (overlaps with subtext)
-      tl.to(
-        buttonsRef.current,
-        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
-        '-=0.4'
-      )
-
-      // 5. Stats bar (overlaps with buttons)
-      tl.to(
-        statsRef.current,
-        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
-        '-=0.4'
-      )
+      tl.to(subtextRef.current, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.3')
+      tl.to(searchRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.3')
+      tl.to(buttonsRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.3')
+      tl.to(statsRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.4')
     }
 
     // ── Hero parallax ─────────────────────────────────────────────────
@@ -149,7 +127,7 @@ export function HeroSection() {
       ref={sectionRef}
       className="relative w-full h-screen min-h-[600px] flex flex-col overflow-hidden"
     >
-      {/* Parallax image wrapper — oversized so movement stays within bounds */}
+      {/* Parallax image wrapper */}
       <div
         ref={imgWrapperRef}
         className="absolute inset-0 scale-[1.3] will-change-transform"
@@ -164,10 +142,10 @@ export function HeroSection() {
         />
       </div>
 
-      {/* Bottom-up gradient — deepens content area */}
+      {/* Bottom-up gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10 pointer-events-none" />
 
-      {/* Top-down gradient — ensures navbar text is legible over any image */}
+      {/* Top-down gradient — ensures navbar text is legible */}
       <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/65 to-transparent pointer-events-none" />
 
       {/* Main content */}
@@ -175,7 +153,7 @@ export function HeroSection() {
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="max-w-2xl">
 
-            {/* Label — fades in first */}
+            {/* Label */}
             <span
               ref={labelRef}
               className="inline-block text-yellow text-sm font-medium tracking-widest uppercase mb-4"
@@ -183,12 +161,11 @@ export function HeroSection() {
               Travel Differently
             </span>
 
-            {/* Headline — word-by-word cinematic reveal */}
+            {/* Headline — Fraunces display font, word-by-word reveal */}
             <h1
               ref={headlineRef}
-              className="font-heading font-bold text-white text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6"
+              className="font-display font-bold text-white text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6"
             >
-              {/* Line 1: individual word slots */}
               <span className="flex flex-wrap">
                 {LINE1_WORDS.map((word) => (
                   <span
@@ -201,8 +178,6 @@ export function HeroSection() {
                   </span>
                 ))}
               </span>
-
-              {/* Line 2: yellow word */}
               <span className="overflow-hidden inline-block">
                 <span className="inline-block text-yellow" data-word="">
                   {LINE2_WORD}
@@ -213,17 +188,28 @@ export function HeroSection() {
             {/* Subtext */}
             <p
               ref={subtextRef}
-              className="text-white/80 text-lg md:text-xl max-w-xl mb-8 leading-relaxed"
+              className="text-white/80 text-lg md:text-xl max-w-xl mb-0 leading-relaxed"
             >
               OffMap is for people who want to travel slower. To hike without
               rushing, sit with a view longer, and experience places deeply.
             </p>
 
-            {/* CTA Buttons */}
+            {/* Search Bar */}
+            <div ref={searchRef} className="mt-8 mb-6">
+              <SearchBar />
+            </div>
+
+            {/* Or explore label */}
+            <p className="text-white/60 text-sm mb-4">Or explore:</p>
+
+            {/* CTA Buttons — outline style, secondary to search */}
             <div ref={buttonsRef} className="flex flex-wrap gap-4">
               <Link
                 href="/destinations"
-                className={cn(buttonVariants({ variant: 'primary', size: 'lg' }))}
+                className={cn(
+                  buttonVariants({ variant: 'outline', size: 'lg' }),
+                  'border-white text-white hover:bg-white hover:text-dark'
+                )}
               >
                 Explore Destinations
               </Link>
@@ -231,7 +217,7 @@ export function HeroSection() {
                 href="/contact"
                 className={cn(
                   buttonVariants({ variant: 'outline', size: 'lg' }),
-                  'border-white text-white hover:bg-white hover:text-dark'
+                  'border-white/60 text-white/80 hover:bg-white hover:text-dark'
                 )}
               >
                 Plan Your Trip
@@ -241,7 +227,7 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Stats bar with counter */}
+      {/* Stats bar */}
       <div className="relative z-10 w-full">
         <div ref={statsRef} className="max-w-7xl mx-auto px-4 pb-12 md:pb-16">
           <div className="inline-flex items-center gap-0 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 overflow-hidden">

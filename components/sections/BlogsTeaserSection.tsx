@@ -48,7 +48,7 @@ export function BlogsTeaserSection() {
   useStaggerReveal(gridRef)
 
   return (
-    <section className="bg-white py-16 md:py-24">
+    <section className="bg-[#EFF6FF] py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4">
         <p className="text-primary text-xs uppercase tracking-widest mb-3">
           BLOGS

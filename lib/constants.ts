@@ -49,6 +49,52 @@ export const LOCATIONS = [
   },
 ] as const
 
+// ── Region Themes ──────────────────────────────────────────────────
+export const REGION_THEMES = {
+  'himachal-pradesh': {
+    name: 'Himachal Pradesh',
+    primary: '#2D6A4F',
+    accent: '#FFD60A',
+    bg: '#F0F7F4',
+    cardBg: '#E8F5EE',
+    label: 'Forest & Valley',
+    emoji: '🌲',
+    description: 'Quiet villages, forest trails, slow mornings.',
+  },
+  rajasthan: {
+    name: 'Rajasthan',
+    primary: '#C1440E',
+    accent: '#F4A261',
+    bg: '#FDF6F0',
+    cardBg: '#FBE9DC',
+    label: 'Desert & Culture',
+    emoji: '🐪',
+    description: 'Beyond forts — desert, villages, adventure.',
+  },
+  kashmir: {
+    name: 'Kashmir',
+    primary: '#C1121F',
+    accent: '#FFFFFF',
+    bg: '#FFF5F5',
+    cardBg: '#FFE8EA',
+    label: 'Mountain Paradise',
+    emoji: '🏔️',
+    description: 'Snow-capped peaks, shikara lakes, saffron fields.',
+  },
+  uttarakhand: {
+    name: 'Uttarakhand',
+    primary: '#6B4226',
+    accent: '#52796F',
+    bg: '#F5F0EB',
+    cardBg: '#EBE0D5',
+    label: 'Hills & Trails',
+    emoji: '🌿',
+    description: 'Quieter, raw, spacious.',
+  },
+} as const
+
+export type RegionThemeKey = keyof typeof REGION_THEMES
+
 // ── Trip Types ────────────────────────────────────────────────────
 export const TRIP_TYPES = [
   { label: 'Group Trips', value: 'group-trip' },

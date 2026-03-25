@@ -52,7 +52,7 @@ export function TestimonialsSection() {
   useStaggerReveal(gridRef)
 
   return (
-    <section className="bg-offwhite py-16 md:py-24">
+    <section className="bg-white py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4">
         <p className="text-primary text-xs uppercase tracking-widest mb-3">
           WHAT TRAVELERS SAY
@@ -66,7 +66,7 @@ export function TestimonialsSection() {
           className="grid grid-cols-1 md:grid-cols-3 gap-6"
         >
           {TESTIMONIALS.map((t) => (
-            <Card key={t.name} className="flex flex-col">
+            <Card key={t.name} className="flex flex-col bg-offwhite">
               <CardBody className="flex flex-col flex-1">
                 <StarRating />
                 <p className="font-body text-muted text-base leading-relaxed flex-1 mb-6">

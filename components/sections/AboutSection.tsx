@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/Button'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
@@ -33,16 +34,45 @@ export function AboutSection() {
             </p>
             <Link
               href="/contact"
-              className={cn(buttonVariants({ variant: 'secondary', size: 'md' }))}
+              className={cn(buttonVariants({ variant: 'primary', size: 'md' }))}
             >
               Plan Your Journey
             </Link>
           </div>
 
-          {/* Right column */}
-          <div className="lg:col-span-5">
-            <div className="bg-border rounded-3xl aspect-[4/3] flex items-center justify-center">
-              <span className="text-muted text-sm italic">Illustration coming</span>
+          {/* Right column — photo collage (desktop only) */}
+          <div className="lg:col-span-5 hidden lg:block">
+            <div className="relative h-[420px]">
+              {/* Large image — back layer */}
+              <div className="absolute top-0 right-8 w-64 h-80 rounded-2xl overflow-hidden shadow-card-hover z-10">
+                <Image
+                  src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80"
+                  alt="Himalayan landscape"
+                  fill
+                  className="object-cover"
+                  sizes="256px"
+                />
+              </div>
+              {/* Medium image — rotated middle layer */}
+              <div className="absolute top-16 right-48 w-48 h-56 rounded-xl overflow-hidden shadow-xl rotate-[-4deg] z-20">
+                <Image
+                  src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=600&q=80"
+                  alt="Local village scene"
+                  fill
+                  className="object-cover"
+                  sizes="192px"
+                />
+              </div>
+              {/* Small image — rotated front accent */}
+              <div className="absolute bottom-0 right-24 w-32 h-40 rounded-xl overflow-hidden shadow-lg rotate-[3deg] z-30">
+                <Image
+                  src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&q=80"
+                  alt="Forest trail"
+                  fill
+                  className="object-cover"
+                  sizes="128px"
+                />
+              </div>
             </div>
           </div>
         </div>

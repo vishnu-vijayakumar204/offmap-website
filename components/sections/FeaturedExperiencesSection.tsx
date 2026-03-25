@@ -9,6 +9,7 @@ import { FEATURED_ROUTES } from '@/lib/constants'
 import { Badge } from '@/components/ui/Badge'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { registerGSAP } from '@/lib/animations'
+import { cn } from '@/lib/utils'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -71,11 +72,15 @@ export function FeaturedExperiencesSection() {
     return () => ctx.revert()
   }, [])
 
-  const cards = FEATURED_ROUTES.map((route) => (
+  const cards = FEATURED_ROUTES.map((route, index) => (
     <Link
       key={route.slug}
       href={`/experiences/${route.slug}`}
-      className="flex-none w-[280px] md:w-[340px] rounded-2xl overflow-hidden bg-white shadow-card hover:shadow-card-hover transition-shadow duration-200"
+      className={cn(
+        'flex-none w-[280px] md:w-[340px] rounded-2xl overflow-hidden bg-white shadow-card hover:shadow-card-hover transition-shadow duration-200',
+        'border-l-4',
+        index % 2 === 0 ? 'border-l-primary' : 'border-l-yellow'
+      )}
     >
       <div className="relative h-[380px]">
         <Image
@@ -100,7 +105,7 @@ export function FeaturedExperiencesSection() {
   ))
 
   return (
-    <section ref={sectionRef} className="bg-white">
+    <section ref={sectionRef} className="bg-offwhite">
       {/* Heading — always in normal flow */}
       <div className="max-w-7xl mx-auto px-4 pt-16 md:pt-24 pb-8">
         <div ref={headingRef}>

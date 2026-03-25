@@ -19,12 +19,12 @@ export function QuickNavSection() {
   useStaggerReveal(cardsRef)
 
   return (
-    <section className="bg-primary py-16 md:py-24">
+    <section className="bg-yellow py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4">
-        <p className="text-yellow text-xs tracking-widest uppercase mb-3">
+        <p className="text-dark/60 text-xs tracking-widest uppercase mb-3">
           DONE TRAVELING TO CROWDED DESTINATIONS?
         </p>
-        <h2 className="font-heading font-bold text-3xl md:text-4xl text-white mb-10">
+        <h2 className="font-heading font-bold text-3xl md:text-4xl text-dark mb-10">
           Let&apos;s Travel <span className="italic">OFFMAP</span>
         </h2>
 
@@ -39,17 +39,20 @@ export function QuickNavSection() {
                 key={experience.label}
                 href={experience.href}
                 className={cn(
-                  'bg-white rounded-2xl p-6',
-                  'hover:shadow-card-hover transition-shadow duration-200'
+                  'group bg-primary rounded-2xl p-6',
+                  'hover:shadow-card-hover transition-all duration-200'
                 )}
               >
                 {Icon && (
-                  <Icon size={28} className="text-primary mb-4" />
+                  <Icon size={28} className="text-white mb-4" />
                 )}
-                <p className="font-heading font-semibold text-dark text-base mb-1">
+                <p className="font-heading font-semibold text-white text-base mb-1">
                   {experience.label}
                 </p>
-                <ArrowRight size={16} className="text-primary mt-4" />
+                <ArrowRight
+                  size={16}
+                  className="text-yellow mt-4 group-hover:translate-x-1 transition-transform duration-200"
+                />
               </Link>
             )
           })}
