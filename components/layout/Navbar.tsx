@@ -7,7 +7,6 @@ import { Menu, X } from 'lucide-react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { NAV_LINKS } from '@/lib/constants'
-import { buttonVariants } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { DURATION_FAST, EASE_OUT } from '@/lib/animations'
 
@@ -74,39 +73,31 @@ export default function Navbar() {
         ref={navRef}
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-          isScrolled
-            ? 'bg-white shadow-[0_2px_16px_rgba(0,0,0,0.08)]'
-            : 'bg-transparent'
+          'bg-paper border-b border-dashed border-[#D4C9B0]',
+          isScrolled && 'shadow-[0_2px_16px_rgba(0,0,0,0.08)]'
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14 md:h-16">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
           {/* Logo */}
           <Link
             href="/"
-            className={cn(
-              'font-heading font-bold text-xl hover:opacity-80 transition-colors duration-300',
-              isScrolled ? 'text-dark' : 'text-white'
-            )}
+            className="font-display italic font-bold text-xl text-dark hover:opacity-75 transition-opacity duration-200"
             onClick={closeMobileMenu}
           >
             OffMap India
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
+          <nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
                   'font-body text-sm transition-colors duration-200 relative pb-0.5',
-                  isScrolled
-                    ? isActive(link.href)
-                      ? 'text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-yellow after:rounded-full'
-                      : 'text-dark hover:text-primary'
-                    : isActive(link.href)
-                      ? 'text-yellow after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-yellow after:rounded-full'
-                      : 'text-white hover:text-yellow'
+                  isActive(link.href)
+                    ? 'text-dark after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-yellow after:rounded-none'
+                    : 'text-dark/60 hover:text-blue'
                 )}
               >
                 {link.label}
@@ -118,12 +109,7 @@ export default function Navbar() {
           <div className="hidden md:block">
             <Link
               href="/contact"
-              className={cn(
-                isScrolled
-                  ? buttonVariants({ variant: 'primary', size: 'sm' })
-                  : buttonVariants({ variant: 'outline', size: 'sm' }),
-                !isScrolled && 'border-white text-white hover:bg-white hover:text-dark'
-              )}
+              className="font-heading font-semibold text-sm bg-yellow text-dark border-2 border-dark px-4 py-2 rounded-none transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] inline-block"
             >
               Plan Your Trip
             </Link>
@@ -131,10 +117,7 @@ export default function Navbar() {
 
           {/* Mobile Hamburger */}
           <button
-            className={cn(
-              'md:hidden flex items-center justify-center w-11 h-11 transition-colors duration-300',
-              isScrolled ? 'text-dark' : 'text-white'
-            )}
+            className="md:hidden flex items-center justify-center w-11 h-11 text-dark"
             onClick={() => setIsMobileOpen((prev) => !prev)}
             aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isMobileOpen}
@@ -147,7 +130,7 @@ export default function Navbar() {
       {/* Mobile Menu Overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black/30 z-40 md:hidden"
+          className="fixed inset-0 bg-dark/30 z-40 md:hidden"
           onClick={closeMobileMenu}
           aria-hidden="true"
         />
@@ -156,12 +139,12 @@ export default function Navbar() {
       {/* Mobile Menu Panel */}
       <div
         ref={mobileMenuRef}
-        className="fixed top-0 right-0 bottom-0 w-4/5 max-w-sm bg-white z-50 md:hidden flex flex-col translate-x-full"
+        className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-cream z-50 md:hidden flex flex-col translate-x-full"
         aria-hidden={!isMobileOpen}
       >
         {/* Close button */}
-        <div className="flex items-center justify-between px-4 h-14 border-b border-border">
-          <span className="font-heading font-bold text-lg text-dark">Menu</span>
+        <div className="flex items-center justify-between px-5 h-14 border-b border-dashed border-[#D4C9B0]">
+          <span className="font-display italic font-bold text-lg text-dark">Menu</span>
           <button
             className="flex items-center justify-center w-11 h-11 text-dark"
             onClick={closeMobileMenu}
@@ -172,17 +155,17 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Nav Links */}
-        <nav className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-1" aria-label="Mobile navigation">
+        <nav className="flex-1 overflow-y-auto px-5 py-8 flex flex-col gap-2" aria-label="Mobile navigation">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={closeMobileMenu}
               className={cn(
-                'font-body text-base py-3 px-3 rounded-lg transition-colors duration-200',
+                'font-display text-2xl font-bold py-2 border-b border-dashed border-[#D4C9B0] transition-colors duration-200',
                 isActive(link.href)
-                  ? 'text-primary bg-primary/5 font-medium'
-                  : 'text-dark hover:text-primary hover:bg-primary/5'
+                  ? 'text-blue'
+                  : 'text-dark hover:text-blue'
               )}
             >
               {link.label}
@@ -190,15 +173,18 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Mobile CTA */}
-        <div className="px-4 py-6 border-t border-border">
+        {/* Mobile CTA + Tagline */}
+        <div className="px-5 py-6 flex flex-col gap-4">
           <Link
             href="/contact"
             onClick={closeMobileMenu}
-            className={cn(buttonVariants({ variant: 'primary', size: 'md' }), 'w-full')}
+            className="font-heading font-semibold text-base bg-yellow text-dark border-2 border-dark px-6 py-3 rounded-none text-center transition-transform duration-200 hover:-translate-y-0.5 block"
           >
             Plan Your Trip
           </Link>
+          <p className="font-handwriting text-dark/50 text-lg text-center">
+            go somewhere different ✈
+          </p>
         </div>
       </div>
     </>

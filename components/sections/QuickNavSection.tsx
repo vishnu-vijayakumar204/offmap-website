@@ -2,29 +2,38 @@
 
 import { useRef } from 'react'
 import Link from 'next/link'
-import { Users, Zap, Compass, Star, ArrowRight, type LucideIcon } from 'lucide-react'
-import { EXPERIENCES } from '@/lib/constants'
+import { Users, Sun, Compass, BookOpen, type LucideIcon } from 'lucide-react'
+import { SectionLabel } from '@/components/ui/scrapbook'
 import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 import { cn } from '@/lib/utils'
 
-const ICON_MAP: Record<string, LucideIcon> = {
-  'Group Trips': Users,
-  'Day Trips': Zap,
-  'Activities & Experiences': Compass,
-  'Tailored Trips': Star,
+interface NavTile {
+  label: string
+  href: string
+  icon: LucideIcon
+  borderColor: string
 }
+
+const TILES: NavTile[] = [
+  { label: 'Group Trips', href: '/experiences/group-trips', icon: Users, borderColor: '#1B4FD8' },
+  { label: 'Day Trips', href: '/experiences/day-trips', icon: Sun, borderColor: '#FFD60A' },
+  { label: 'Activities', href: '/experiences/activities', icon: Compass, borderColor: '#2D6A4F' },
+  { label: 'Student Program', href: '/student-program', icon: BookOpen, borderColor: '#F59E0B' },
+]
 
 export function QuickNavSection() {
   const cardsRef = useRef<HTMLDivElement>(null)
   useStaggerReveal(cardsRef)
 
   return (
-    <section className="bg-primary py-16 md:py-24">
+    <section className="bg-dark py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4">
-        <p className="text-yellow text-xs tracking-widest uppercase mb-3">
-          DONE TRAVELING TO CROWDED DESTINATIONS?
-        </p>
-        <h2 className="font-heading font-bold text-3xl md:text-4xl text-white mb-10">
+        <SectionLabel
+          text="done with tourist traps?"
+          style="handwritten"
+          className="text-yellow mb-5 block"
+        />
+        <h2 className="font-display font-black text-white text-4xl md:text-5xl mb-12">
           Let&apos;s Travel <span className="italic">OFFMAP</span>
         </h2>
 
@@ -32,24 +41,26 @@ export function QuickNavSection() {
           ref={cardsRef}
           className="grid grid-cols-2 lg:grid-cols-4 gap-4"
         >
-          {EXPERIENCES.map((experience) => {
-            const Icon = ICON_MAP[experience.label]
+          {TILES.map((tile) => {
+            const Icon = tile.icon
             return (
               <Link
-                key={experience.label}
-                href={experience.href}
+                key={tile.label}
+                href={tile.href}
+                style={{ '--tc': tile.borderColor } as React.CSSProperties}
                 className={cn(
-                  'bg-white rounded-2xl p-6',
-                  'hover:shadow-card-hover transition-shadow duration-200'
+                  'group block border-2 border-[var(--tc)] rounded-none p-6',
+                  'bg-transparent transition-colors duration-200',
+                  'hover:bg-white/5'
                 )}
               >
-                {Icon && (
-                  <Icon size={28} className="text-primary mb-4" />
-                )}
-                <p className="font-heading font-semibold text-dark text-base mb-1">
-                  {experience.label}
+                <Icon size={32} className="text-yellow mb-4" />
+                <p className="font-heading font-semibold text-white text-base mb-4">
+                  {tile.label}
                 </p>
-                <ArrowRight size={16} className="text-primary mt-4" />
+                <span className="text-yellow text-lg group-hover:translate-x-1 inline-block transition-transform duration-200">
+                  →
+                </span>
               </Link>
             )
           })}
