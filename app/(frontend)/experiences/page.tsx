@@ -1,8 +1,10 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   Mountain,
   Tent,
@@ -16,6 +18,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { REGION_THEMES, LOCATIONS, type RegionThemeKey } from '@/lib/constants'
+import { registerGSAP } from '@/lib/animations'
 import {
   PostageStamp,
   WashiTape,
@@ -172,19 +175,19 @@ const EXPERIENCES: ExperienceCardData[] = [
   },
 ]
 
-// ─── Activity types for carousel ─────────────────────────────────────────────
+// ─── Activity types carousel ──────────────────────────────────────────────────
 const ACTIVITY_TYPES = [
-  { label: 'Trekking', value: 'trekking', icon: Mountain, color: '#2D6A4F', bg: '#E8F5EE' },
-  { label: 'Camping', value: 'camping', icon: Tent, color: '#6B4226', bg: '#EBE0D5' },
-  { label: 'Cultural', value: 'cultural', icon: Landmark, color: '#C1440E', bg: '#FBE9DC' },
-  { label: 'Wildlife', value: 'wildlife', icon: Binoculars, color: '#F59E0B', bg: '#FFF3CD' },
-  { label: 'Adventure', value: 'adventure', icon: Zap, color: '#1B4FD8', bg: '#EEF2FF' },
-  { label: 'Stays', value: 'stays', icon: Home, color: '#7C3AED', bg: '#F3E8FF' },
-  { label: 'Activities', value: 'activities', icon: Star, color: '#0D9488', bg: '#CCFBF1' },
-  { label: 'Learning', value: 'learning', icon: BookOpen, color: '#FFD60A', bg: '#FFFDE8' },
+  { label: 'Trekking',   value: 'trekking',   icon: Mountain,  color: '#2D6A4F', bg: '#E8F5EE' },
+  { label: 'Camping',    value: 'camping',    icon: Tent,      color: '#6B4226', bg: '#EBE0D5' },
+  { label: 'Cultural',   value: 'cultural',   icon: Landmark,  color: '#C1440E', bg: '#FBE9DC' },
+  { label: 'Wildlife',   value: 'wildlife',   icon: Binoculars,color: '#F59E0B', bg: '#FFF3CD' },
+  { label: 'Adventure',  value: 'adventure',  icon: Zap,       color: '#1B4FD8', bg: '#EEF2FF' },
+  { label: 'Stays',      value: 'stays',      icon: Home,      color: '#7C3AED', bg: '#F3E8FF' },
+  { label: 'Activities', value: 'activities', icon: Star,      color: '#0D9488', bg: '#CCFBF1' },
+  { label: 'Learning',   value: 'learning',   icon: BookOpen,  color: '#B45309', bg: '#FFFDE8' },
 ] as const
 
-// ─── Region filter buttons ────────────────────────────────────────────────────
+// ─── Region filter list ───────────────────────────────────────────────────────
 const REGIONS = [
   { label: 'All', value: 'all', primary: '#0F172A' },
   ...LOCATIONS.map((l) => ({
@@ -194,15 +197,28 @@ const REGIONS = [
   })),
 ]
 
-// ─── Page ────────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ExperiencesPage() {
   const [activeRegion, setActiveRegion] = useState('all')
   const [activeType, setActiveType] = useState('all')
 
-  const gridRef = useRef<HTMLElement>(null)
-  const carouselRef = useRef<HTMLDivElement>(null)
-  const [carouselScroll, setCarouselScroll] = useState(0)
+  // Section refs
+  const heroRef       = useRef<HTMLElement>(null)
+  const heroImgRef    = useRef<HTMLDivElement>(null)
+  const heroLabelRef  = useRef<HTMLParagraphElement>(null)
+  const heroTitleRef  = useRef<HTMLHeadingElement>(null)
+  const heroSubRef    = useRef<HTMLParagraphElement>(null)
+  const filterBarRef  = useRef<HTMLDivElement>(null)
+  const featuredRef   = useRef<HTMLElement>(null)
+  const featuredImgRef = useRef<HTMLDivElement>(null)
+  const gridRef       = useRef<HTMLElement>(null)
+  const gridHeaderRef = useRef<HTMLDivElement>(null)
+  const carouselRef   = useRef<HTMLDivElement>(null)
+  const carouselSectionRef = useRef<HTMLElement>(null)
+  const studentRef    = useRef<HTMLElement>(null)
+  const ctaRef        = useRef<HTMLElement>(null)
 
+  const [carouselScroll, setCarouselScroll] = useState(0)
   const handleCarouselScroll = useCallback(() => {
     if (carouselRef.current) setCarouselScroll(carouselRef.current.scrollLeft)
   }, [])
@@ -221,61 +237,347 @@ export default function ExperiencesPage() {
 
   const filteredExperiences = EXPERIENCES.filter((e) => {
     const regionMatch = activeRegion === 'all' || e.regionSlug === activeRegion
-    const typeMatch = activeType === 'all' || e.type.toLowerCase() === activeType
+    const typeMatch   = activeType   === 'all' || e.type.toLowerCase() === activeType
     return regionMatch && typeMatch
   })
 
-  const featured = EXPERIENCES[0]
-  const featuredTheme = REGION_THEMES[featured.regionSlug as RegionThemeKey]
+  const featured       = EXPERIENCES[0]
+  const featuredTheme  = REGION_THEMES[featured.regionSlug as RegionThemeKey]
 
   const isCarouselAtStart = carouselScroll <= 8
-  const isCarouselAtEnd = carouselRef.current
+  const isCarouselAtEnd   = carouselRef.current
     ? carouselScroll >= carouselRef.current.scrollWidth - carouselRef.current.clientWidth - 8
     : false
 
+  // ─── 1. MOUNT ANIMATIONS ────────────────────────────────────────────────────
+  useEffect(() => {
+    registerGSAP()
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return
+
+    const ctx = gsap.context(() => {
+
+      // ── HERO: image parallax (scrub) ──────────────────────────────────────
+      if (heroImgRef.current && heroRef.current) {
+        gsap.to(heroImgRef.current, {
+          yPercent: 28,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1.2,
+          },
+        })
+      }
+
+      // ── HERO: staggered text reveal ───────────────────────────────────────
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+      if (heroLabelRef.current) {
+        tl.from(heroLabelRef.current, { y: 24, opacity: 0, duration: 0.55 }, 0.25)
+      }
+      if (heroTitleRef.current) {
+        const words = heroTitleRef.current.querySelectorAll('.hero-word')
+        tl.from(words,
+          { y: '110%', opacity: 0, stagger: 0.1, duration: 0.75 },
+          0.5
+        )
+      }
+      if (heroSubRef.current) {
+        tl.from(heroSubRef.current, { y: 20, opacity: 0, duration: 0.55 }, 1.1)
+      }
+
+      // ── FILTER BAR: pills cascade in on mount ─────────────────────────────
+      if (filterBarRef.current) {
+        const pills = filterBarRef.current.querySelectorAll('button')
+        gsap.from(pills, {
+          scale: 0.7,
+          opacity: 0,
+          stagger: 0.04,
+          duration: 0.4,
+          ease: 'back.out(1.4)',
+          delay: 1.2,
+        })
+      }
+
+      // ── FEATURED: clip-path image wipe left → right ───────────────────────
+      if (featuredImgRef.current && featuredRef.current) {
+        gsap.fromTo(
+          featuredImgRef.current,
+          { clipPath: 'inset(0 100% 0 0 round 16px)' },
+          {
+            clipPath: 'inset(0 0% 0 0 round 16px)',
+            duration: 1.1,
+            ease: 'power3.inOut',
+            scrollTrigger: {
+              trigger: featuredRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none none',
+            },
+          }
+        )
+        // PostageStamp spin-in after image wipe
+        const stamp = featuredImgRef.current.querySelector('.featured-stamp-wrap')
+        if (stamp) {
+          gsap.from(stamp, {
+            scale: 0,
+            rotation: -200,
+            opacity: 0,
+            duration: 0.7,
+            ease: 'back.out(1.7)',
+            delay: 0.6,
+            scrollTrigger: {
+              trigger: featuredRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none none',
+            },
+          })
+        }
+      }
+
+      // ── FEATURED: content stagger slide up ───────────────────────────────
+      if (featuredRef.current) {
+        const items = featuredRef.current.querySelectorAll('.featured-item')
+        gsap.from(items, {
+          y: 44,
+          opacity: 0,
+          stagger: 0.11,
+          duration: 0.65,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: featuredRef.current,
+            start: 'top 72%',
+            toggleActions: 'play none none none',
+          },
+        })
+      }
+
+      // ── GRID: header slides in ────────────────────────────────────────────
+      if (gridHeaderRef.current) {
+        gsap.from(gridHeaderRef.current.children, {
+          y: 32,
+          opacity: 0,
+          stagger: 0.12,
+          duration: 0.6,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: gridHeaderRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        })
+      }
+
+      // ── ACTIVITY TILES: bounce scale in ──────────────────────────────────
+      if (carouselSectionRef.current) {
+        const tiles   = carouselSectionRef.current.querySelectorAll('.act-tile')
+        const heading = carouselSectionRef.current.querySelector('.act-heading')
+        if (heading) {
+          gsap.from(heading.children, {
+            y: 36,
+            opacity: 0,
+            stagger: 0.1,
+            duration: 0.6,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: heading,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          })
+        }
+        gsap.from(tiles, {
+          scale: 0,
+          opacity: 0,
+          stagger: 0.07,
+          duration: 0.5,
+          ease: 'back.out(1.5)',
+          scrollTrigger: {
+            trigger: carouselRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        })
+      }
+
+      // ── STUDENT SECTION ───────────────────────────────────────────────────
+      if (studentRef.current) {
+        const emoji   = studentRef.current.querySelector('.student-emoji')
+        const content = studentRef.current.querySelectorAll('.student-item')
+        const tiles   = studentRef.current.querySelectorAll('.benefit-tile')
+
+        if (emoji) {
+          gsap.from(emoji, {
+            y: -100,
+            opacity: 0,
+            rotation: -20,
+            duration: 0.9,
+            ease: 'bounce.out',
+            scrollTrigger: {
+              trigger: studentRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none none',
+            },
+          })
+        }
+        if (content.length) {
+          gsap.from(content, {
+            y: 40,
+            opacity: 0,
+            stagger: 0.12,
+            duration: 0.65,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: studentRef.current,
+              start: 'top 72%',
+              toggleActions: 'play none none none',
+            },
+          })
+        }
+        if (tiles.length) {
+          gsap.from(tiles, {
+            x: 60,
+            opacity: 0,
+            stagger: 0.13,
+            duration: 0.6,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: studentRef.current,
+              start: 'top 72%',
+              toggleActions: 'play none none none',
+            },
+          })
+        }
+      }
+
+      // ── CTA: 3D word flip reveal ──────────────────────────────────────────
+      if (ctaRef.current) {
+        const words   = ctaRef.current.querySelectorAll('.cta-word')
+        const sub     = ctaRef.current.querySelector('.cta-sub')
+        const buttons = ctaRef.current.querySelectorAll('.cta-btn')
+
+        if (words.length) {
+          gsap.from(words, {
+            rotateX: 90,
+            y: 30,
+            opacity: 0,
+            stagger: 0.09,
+            duration: 0.65,
+            ease: 'back.out(1.2)',
+            transformOrigin: '50% 50% -30px',
+            scrollTrigger: {
+              trigger: ctaRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          })
+        }
+        if (sub) {
+          gsap.from(sub, {
+            y: 24,
+            opacity: 0,
+            duration: 0.55,
+            delay: 0.35,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: ctaRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          })
+        }
+        if (buttons.length) {
+          gsap.from(buttons, {
+            scale: 0.85,
+            opacity: 0,
+            stagger: 0.1,
+            duration: 0.5,
+            ease: 'back.out(1.6)',
+            delay: 0.5,
+            scrollTrigger: {
+              trigger: ctaRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          })
+        }
+      }
+
+    }) // end gsap.context
+
+    return () => ctx.revert()
+  }, []) // run once on mount
+
+  // ─── 2. FILTER CHANGE ANIMATION ─────────────────────────────────────────────
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return
+    const cards = gridRef.current?.querySelectorAll<HTMLElement>('.exp-card')
+    if (!cards?.length) return
+    gsap.fromTo(
+      Array.from(cards),
+      { y: 28, opacity: 0, scale: 0.96 },
+      { y: 0, opacity: 1, scale: 1, stagger: 0.07, duration: 0.38, ease: 'power2.out' }
+    )
+  }, [activeRegion, activeType])
+
+  // ─── Render ──────────────────────────────────────────────────────────────────
   return (
     <main>
 
-      {/* ════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════
           SECTION 1 — HERO
-      ════════════════════════════════════════════════════════════ */}
-      <section className="relative h-[55vh] min-h-[420px] overflow-hidden flex items-center justify-center text-center">
-        <Image
-          src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=1920&q=80"
-          alt="Experiences hero"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
+      ════════════════════════════════════════════════════════ */}
+      <section
+        ref={heroRef}
+        className="relative h-[55vh] min-h-[420px] overflow-hidden flex items-center justify-center text-center"
+      >
+        {/* Parallax image wrapper — GSAP moves this independently */}
+        <div ref={heroImgRef} className="absolute inset-[-15%] will-change-transform">
+          <Image
+            src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=1920&q=80"
+            alt="Experiences hero"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/20" />
 
         <div className="relative z-10 px-4 max-w-2xl mx-auto">
-          <p className="font-handwriting text-yellow-400 text-xl mb-3">
+          <p ref={heroLabelRef} className="font-handwriting text-yellow-400 text-xl mb-3">
             not your usual trip
           </p>
-          <h1 className="font-display font-black text-white text-4xl md:text-6xl leading-tight mb-4">
-            Experience the Unscripted
+
+          {/* Word-split headline for GSAP per-word reveal */}
+          <h1 ref={heroTitleRef} className="font-display font-black text-white text-4xl md:text-6xl leading-tight mb-4 overflow-hidden">
+            {['Experience', 'the', 'Unscripted'].map((word, i) => (
+              <span key={i} className="inline-block overflow-hidden leading-tight align-bottom mr-[0.22em] last:mr-0">
+                <span className="hero-word inline-block">{word}</span>
+              </span>
+            ))}
           </h1>
-          <p className="font-body text-white/80 text-lg max-w-xl mx-auto">
+
+          <p ref={heroSubRef} className="font-body text-white/80 text-lg max-w-xl mx-auto">
             Every experience is something we&apos;ve done ourselves first. No packages. No
             checklists. Just real.
           </p>
         </div>
 
-        {/* Wavy bottom into filter bar */}
         <div className="absolute bottom-[-1px] left-0 right-0 z-10">
           <WavyDivider fill="#FFF8E7" />
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════
           SECTION 2 — FILTER BAR (sticky)
-      ════════════════════════════════════════════════════════════ */}
+      ════════════════════════════════════════════════════════ */}
       <div className="sticky top-16 z-40 bg-[#FFF8E7]/95 backdrop-blur-sm border-b border-[#E2E8F0]/50">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div ref={filterBarRef} className="max-w-7xl mx-auto px-4 py-4">
 
-          {/* Row 1 — By Region */}
+          {/* Row 1 — Region */}
           <div className="flex flex-wrap gap-2 mb-3">
             {REGIONS.map((r) => {
               const isActive = activeRegion === r.value
@@ -283,16 +585,12 @@ export default function ExperiencesPage() {
                 <button
                   key={r.value}
                   onClick={() => setActiveRegion(r.value)}
-                  style={
-                    isActive
-                      ? ({ '--rc': r.primary } as React.CSSProperties)
-                      : undefined
-                  }
+                  style={isActive ? ({ '--rc': r.primary } as React.CSSProperties) : undefined}
                   className={cn(
                     'px-4 py-1.5 rounded-full font-body text-sm font-medium transition-all duration-150',
                     isActive
-                      ? 'bg-[var(--rc)] text-white shadow-sm'
-                      : 'bg-white border-2 border-gray-200 text-dark/70 hover:border-gray-300'
+                      ? 'bg-[var(--rc)] text-white shadow-sm scale-105'
+                      : 'bg-white border-2 border-gray-200 text-dark/70 hover:border-gray-300 hover:scale-105'
                   )}
                 >
                   {r.label}
@@ -301,7 +599,7 @@ export default function ExperiencesPage() {
             })}
           </div>
 
-          {/* Row 2 — By Type */}
+          {/* Row 2 — Type */}
           <div className="flex flex-wrap gap-2">
             {[{ label: 'All Types', value: 'all' }, ...ACTIVITY_TYPES.map((a) => ({ label: a.label, value: a.value }))].map(
               (t) => {
@@ -313,8 +611,8 @@ export default function ExperiencesPage() {
                     className={cn(
                       'px-3 py-1 rounded-full font-body text-xs font-medium border-2 transition-all duration-150',
                       isActive
-                        ? 'bg-dark text-white border-dark'
-                        : 'bg-white border-gray-200 text-dark/60 hover:border-gray-300'
+                        ? 'bg-dark text-white border-dark scale-105'
+                        : 'bg-white border-gray-200 text-dark/60 hover:border-gray-300 hover:scale-105'
                     )}
                   >
                     {t.label}
@@ -326,15 +624,15 @@ export default function ExperiencesPage() {
         </div>
       </div>
 
-      {/* ════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════
           SECTION 3 — FEATURED EXPERIENCE
-      ════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#FFF8E7] py-16 md:py-20">
+      ════════════════════════════════════════════════════════ */}
+      <section ref={featuredRef} className="bg-[#FFF8E7] py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 
-            {/* LEFT — Image */}
-            <div className="relative h-72 md:h-80 rounded-2xl overflow-hidden">
+            {/* LEFT — image with clip-path animation */}
+            <div ref={featuredImgRef} className="relative h-72 md:h-80 rounded-2xl overflow-hidden">
               <Image
                 src={featured.image}
                 alt={featured.name}
@@ -342,36 +640,36 @@ export default function ExperiencesPage() {
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
-              <div className="absolute top-4 left-4">
+              <div className="absolute top-4 left-4 featured-stamp-wrap">
                 <PostageStamp region={featured.regionSlug as RegionThemeKey} />
               </div>
             </div>
 
-            {/* RIGHT — Content */}
+            {/* RIGHT — staggered content items */}
             <div>
-              <WashiTape color="yellow" rotation={-2} width="w-28" className="mb-4" />
-              <p className="font-handwriting text-dark/50 text-lg mb-2">our favourite →</p>
-
-              <div className="mb-3">
+              <div className="featured-item">
+                <WashiTape color="yellow" rotation={-2} width="w-28" className="mb-4" />
+                <p className="font-handwriting text-dark/50 text-lg mb-2">our favourite →</p>
+              </div>
+              <div className="featured-item mb-3">
                 <StampBadge text="Featured" color={featuredTheme.primary} rotation={-3} />
               </div>
-
-              <h2 className="font-display font-black text-dark text-3xl md:text-4xl leading-tight mb-1">
+              <h2 className="featured-item font-display font-black text-dark text-3xl md:text-4xl leading-tight mb-1">
                 {featured.name}
               </h2>
               <p
                 style={{ color: featuredTheme.primary }}
-                className="font-handwriting text-lg mb-4"
+                className="featured-item font-handwriting text-lg mb-4"
               >
                 {featured.region}
               </p>
-              <p className="font-body text-gray-600 text-base leading-relaxed mb-6">
+              <p className="featured-item font-body text-gray-600 text-base leading-relaxed mb-6">
                 A 4-day journey through apple orchards, pine forests and shepherd villages
                 that most maps don&apos;t show.
               </p>
 
               {/* Detail pills */}
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="featured-item flex flex-wrap gap-2 mb-6">
                 {[
                   { emoji: '📅', label: '4 Days' },
                   { emoji: '👥', label: 'Group' },
@@ -387,12 +685,14 @@ export default function ExperiencesPage() {
                 ))}
               </div>
 
-              <Link
-                href={`/destinations/${featured.regionSlug}`}
-                className="inline-block font-body font-semibold text-dark bg-yellow px-6 py-3 border-2 border-dark hover:bg-yellow/80 transition-colors duration-200"
-              >
-                View Experience →
-              </Link>
+              <div className="featured-item">
+                <Link
+                  href={`/destinations/${featured.regionSlug}`}
+                  className="inline-block font-body font-semibold text-dark bg-yellow px-6 py-3 border-2 border-dark hover:bg-yellow/80 hover:scale-105 transition-all duration-200 active:scale-100"
+                >
+                  View Experience →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -400,14 +700,14 @@ export default function ExperiencesPage() {
         <WavyDivider fill="#E8F4F0" />
       </section>
 
-      {/* ════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════
           SECTION 4 — ALL EXPERIENCES GRID
-      ════════════════════════════════════════════════════════════ */}
+      ════════════════════════════════════════════════════════ */}
       <section ref={gridRef} className="bg-[#E8F4F0] py-16 md:py-20 scroll-mt-32">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
 
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-end gap-4 mb-10">
+          <div ref={gridHeaderRef} className="flex flex-col sm:flex-row sm:items-end gap-4 mb-10">
             <div>
               <SectionLabel text="All Experiences" style="handwritten" className="block mb-2" />
               <p className="font-handwriting text-dark/50 text-lg">
@@ -427,7 +727,7 @@ export default function ExperiencesPage() {
           {filteredExperiences.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredExperiences.map((exp) => (
-                <ExperienceCard key={exp.name} {...exp} />
+                <ExperienceCard key={exp.name} {...exp} className="exp-card" />
               ))}
             </div>
           ) : (
@@ -450,13 +750,13 @@ export default function ExperiencesPage() {
         <WavyDivider fill="#FFF8E7" />
       </section>
 
-      {/* ════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════
           SECTION 5 — ACTIVITY TYPES CAROUSEL
-      ════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#FFF8E7] py-16 md:py-20">
+      ════════════════════════════════════════════════════════ */}
+      <section ref={carouselSectionRef} className="bg-[#FFF8E7] py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
 
-          <div className="mb-10">
+          <div className="act-heading mb-10">
             <h2 className="font-display font-bold text-dark text-3xl mb-1">
               Browse by Activity
             </h2>
@@ -465,24 +765,21 @@ export default function ExperiencesPage() {
             </p>
           </div>
 
-          {/* Carousel */}
+          {/* Carousel with arrows */}
           <div className="relative">
-            {/* Left arrow */}
             {!isCarouselAtStart && (
               <button
                 onClick={() => scrollCarousel('left')}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-11 h-11 rounded-full bg-white shadow-[var(--shadow-card)] flex items-center justify-center hover:shadow-[var(--shadow-polaroid)] transition-shadow duration-200"
+                className="absolute left-0 top-[calc(50%-1rem)] -translate-y-1/2 -translate-x-4 z-10 w-11 h-11 rounded-full bg-white shadow-[var(--shadow-card)] flex items-center justify-center hover:shadow-[var(--shadow-polaroid)] hover:scale-110 active:scale-95 transition-all duration-200"
                 aria-label="Scroll left"
               >
                 <ChevronLeft size={20} className="text-dark" />
               </button>
             )}
-
-            {/* Right arrow */}
             {!isCarouselAtEnd && (
               <button
                 onClick={() => scrollCarousel('right')}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-11 h-11 rounded-full bg-white shadow-[var(--shadow-card)] flex items-center justify-center hover:shadow-[var(--shadow-polaroid)] transition-shadow duration-200"
+                className="absolute right-0 top-[calc(50%-1rem)] -translate-y-1/2 translate-x-4 z-10 w-11 h-11 rounded-full bg-white shadow-[var(--shadow-card)] flex items-center justify-center hover:shadow-[var(--shadow-polaroid)] hover:scale-110 active:scale-95 transition-all duration-200"
                 aria-label="Scroll right"
               >
                 <ChevronRight size={20} className="text-dark" />
@@ -502,7 +799,7 @@ export default function ExperiencesPage() {
               }
             >
               {ACTIVITY_TYPES.map((act) => {
-                const Icon = act.icon
+                const Icon     = act.icon
                 const isActive = activeType === act.value
                 return (
                   <button
@@ -516,23 +813,27 @@ export default function ExperiencesPage() {
                       } as React.CSSProperties
                     }
                     className={cn(
-                      'flex-shrink-0 w-32 bg-white rounded-2xl p-5 text-center',
+                      'act-tile flex-shrink-0 w-32 bg-white rounded-2xl p-5 text-center',
                       'shadow-[var(--shadow-card)]',
-                      'hover:-translate-y-1 hover:shadow-[var(--shadow-polaroid)]',
+                      'hover:-translate-y-1.5 hover:shadow-[var(--shadow-polaroid)]',
+                      'active:scale-95',
                       'transition-all duration-200 cursor-pointer',
-                      isActive && 'ring-2 ring-[var(--act-color)] ring-offset-2'
+                      isActive && 'ring-2 ring-[var(--act-color)] ring-offset-2 -translate-y-1'
                     )}
                   >
-                    {/* Icon circle */}
                     <div
                       style={{ backgroundColor: act.bg }}
-                      className="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-2"
+                      className={cn(
+                        'w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-2',
+                        'transition-transform duration-200',
+                        isActive && 'scale-110'
+                      )}
                     >
                       <Icon size={24} style={{ color: act.color }} />
                     </div>
                     <p
                       style={{ color: isActive ? act.color : undefined }}
-                      className="font-heading font-semibold text-xs text-dark leading-tight"
+                      className="font-heading font-semibold text-xs text-dark leading-tight transition-colors duration-200"
                     >
                       {act.label}
                     </p>
@@ -546,44 +847,43 @@ export default function ExperiencesPage() {
         <WavyDivider fill="#F59E0B" />
       </section>
 
-      {/* ════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════
           SECTION 6 — STUDENT PROGRAM CALLOUT
-      ════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#F59E0B] py-16 md:py-20">
+      ════════════════════════════════════════════════════════ */}
+      <section ref={studentRef} className="bg-[#F59E0B] py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
 
             {/* LEFT */}
             <div>
-              <span className="text-8xl block mb-5" role="img" aria-label="School bag">
+              <span className="student-emoji text-8xl block mb-5 will-change-transform" role="img" aria-label="School bag">
                 🎒
               </span>
-              <h2 className="font-display font-black text-dark text-3xl md:text-4xl leading-tight mb-4">
+              <h2 className="student-item font-display font-black text-dark text-3xl md:text-4xl leading-tight mb-4">
                 Schools &amp; Colleges
               </h2>
-              <p className="font-body text-dark/70 text-base leading-relaxed mb-8 max-w-md">
+              <p className="student-item font-body text-dark/70 text-base leading-relaxed mb-8 max-w-md">
                 Experiential learning through nature and culture. We design school and college
                 programs that go beyond textbooks.
               </p>
-              <Link
-                href="/student-program"
-                className="inline-block font-body font-semibold text-white bg-dark px-6 py-3 border-2 border-dark hover:bg-dark/90 transition-colors duration-200"
-              >
-                Plan a School Trip →
-              </Link>
+              <div className="student-item">
+                <Link
+                  href="/student-program"
+                  className="inline-block font-body font-semibold text-white bg-dark px-6 py-3 border-2 border-dark hover:bg-dark/90 hover:scale-105 active:scale-100 transition-all duration-200"
+                >
+                  Plan a School Trip →
+                </Link>
+              </div>
             </div>
 
-            {/* RIGHT — 3 benefit tiles */}
+            {/* RIGHT — benefit tiles */}
             <div className="flex flex-col gap-3">
               {[
                 '✅ Real terrain, real learning',
                 '✅ Confidence + curiosity building',
                 '✅ Designed for Indian schools',
               ].map((benefit) => (
-                <div
-                  key={benefit}
-                  className="bg-white/20 rounded-xl p-4"
-                >
+                <div key={benefit} className="benefit-tile bg-white/20 rounded-xl p-4">
                   <p className="font-handwriting text-dark text-lg">{benefit}</p>
                 </div>
               ))}
@@ -594,28 +894,35 @@ export default function ExperiencesPage() {
         <WavyDivider fill="#FFD60A" />
       </section>
 
-      {/* ════════════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════════════
           SECTION 7 — FINAL CTA
-      ════════════════════════════════════════════════════════════ */}
-      <section className="bg-yellow py-20 md:py-28">
+      ════════════════════════════════════════════════════════ */}
+      <section ref={ctaRef} className="bg-yellow py-20 md:py-28 overflow-hidden">
         <div className="max-w-2xl mx-auto px-4 text-center">
           <WashiTape color="blue" rotation={-1} width="w-24" className="mx-auto mb-6" />
-          <h2 className="font-display font-black text-dark text-4xl md:text-5xl leading-tight mb-3">
-            Can&apos;t decide? We&apos;ll help.
+
+          {/* 3D word-flip headline */}
+          <h2 className="font-display font-black text-dark text-4xl md:text-5xl leading-tight mb-3 perspective-[600px]">
+            {["Can't", 'decide?', "We'll", 'help.'].map((word, i) => (
+              <span key={i} className="cta-word inline-block mr-[0.22em] last:mr-0 will-change-transform">
+                {word}
+              </span>
+            ))}
           </h2>
-          <p className="font-handwriting text-dark/60 text-xl mb-10">
+
+          <p className="cta-sub font-handwriting text-dark/60 text-xl mb-10">
             no pressure, no fixed plans
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/contact"
-              className="font-body font-semibold text-white bg-dark px-8 py-4 border-2 border-dark hover:bg-dark/90 transition-colors duration-200"
+              className="cta-btn font-body font-semibold text-white bg-dark px-8 py-4 border-2 border-dark hover:bg-dark/90 hover:scale-105 active:scale-100 transition-all duration-200"
             >
               Talk to Us
             </Link>
             <Link
               href="/destinations"
-              className="font-body font-semibold text-dark px-8 py-4 border-2 border-dark hover:bg-dark/10 transition-colors duration-200"
+              className="cta-btn font-body font-semibold text-dark px-8 py-4 border-2 border-dark hover:bg-dark/10 hover:scale-105 active:scale-100 transition-all duration-200"
             >
               View All Destinations
             </Link>
