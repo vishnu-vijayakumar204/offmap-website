@@ -8,17 +8,7 @@ import { TornEdge, StampBadge, WashiTape, SectionLabel } from '@/components/ui/s
 import { PostageStamp } from '@/components/ui/scrapbook'
 import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 import { cn } from '@/lib/utils'
-
-const DESTINATION_IMAGES: Record<string, string> = {
-  'himachal-pradesh':
-    'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&q=80',
-  rajasthan:
-    'https://assets.myntassets.com/assets/images/2026/MARCH/24/JCyziwzs_6ee01729919d469899c817cec3ea5cd8.jpg',
-  uttarakhand:
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
-  kashmir:
-    'https://assets.myntassets.com/assets/images/2026/MARCH/24/D2v6kHyH_d1c879ce666440a292c02cf334ea2085.jpg',
-}
+import { DESTINATION_CARD_IMAGES } from '@/lib/images'
 
 const CARD_ROTATIONS: Record<string, string> = {
   'himachal-pradesh': '-2deg',
@@ -92,7 +82,7 @@ export function DestinationsSection() {
                 {/* Image */}
                 <div className="relative h-52 overflow-hidden">
                   <Image
-                    src={DESTINATION_IMAGES[location.slug] ?? ''}
+                    src={DESTINATION_CARD_IMAGES[location.slug] ?? ''}
                     alt={location.name}
                     fill
                     sizes="(max-width: 640px) 100vw, 50vw"

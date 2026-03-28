@@ -17,39 +17,8 @@ import {
 import { REGION_EXPERIENCES } from '@/components/sections/RegionSection'
 import type { Experience } from '@/components/sections/RegionSection'
 import { cn } from '@/lib/utils'
+import { HERO_IMAGES, POLAROID_IMAGES, EXPERIENCE_IMAGES, FALLBACK_IMAGE } from '@/lib/images'
 import { useRef, useState, useCallback } from 'react'
-
-// ─── Per-region hero images ───────────────────────────────────────────────────
-const HERO_IMAGES: Record<string, string> = {
-  'himachal-pradesh':
-    'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=1920&q=80',
-  rajasthan:
-    'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1920&q=80',
-  uttarakhand:
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&q=80',
-  kashmir:
-    'https://images.unsplash.com/photo-1588083920840-7c26994d1f4e?w=1920&q=80',
-}
-
-// ─── Per-region polaroid images ───────────────────────────────────────────────
-const POLAROID_IMAGES: Record<string, [string, string]> = {
-  'himachal-pradesh': [
-    'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80',
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80',
-  ],
-  rajasthan: [
-    'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=400&q=80',
-    'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&q=80',
-  ],
-  kashmir: [
-    'https://images.unsplash.com/photo-1588083920840-7c26994d1f4e?w=400&q=80',
-    'https://images.unsplash.com/photo-1609766857897-5a5fc22b8c54?w=400&q=80',
-  ],
-  uttarakhand: [
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&q=80',
-    'https://images.unsplash.com/photo-1602423249797-63f23ff58b0f?w=400&q=80',
-  ],
-}
 
 // ─── Per-region intro subtitles ───────────────────────────────────────────────
 const INTRO_SUBTITLES: Record<string, string> = {
@@ -115,19 +84,6 @@ function WavyDivider({ fill, position = 'bottom' }: { fill: string; position?: '
   )
 }
 
-// ─── Horizontal experience card (reused from RegionSection style) ─────────────
-const EXPERIENCE_IMAGES: Record<string, string> = {
-  'Bir–Barot Trek': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
-  'Rajgundha Valley': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80',
-  'Shangarh–Raghupur Fort': 'https://images.unsplash.com/photo-1625821059754-af93a95c3faf?w=600&q=80',
-  'Barot Valley': 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80',
-  'Jawai Safari': 'https://images.unsplash.com/photo-1549366021-9f761d450615?w=600&q=80',
-  'Udaipur–Mount Abu': 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600&q=80',
-  'Jaisalmer Dunes': 'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=600&q=80',
-  'Kasar Devi–Khaliya Top': 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&q=80',
-  'Binsar Wildlife': 'https://images.unsplash.com/photo-1602423249797-63f23ff58b0f?w=600&q=80',
-}
-
 function SlugExperienceCard({
   exp,
   region,
@@ -158,9 +114,7 @@ function SlugExperienceCard({
   }
 
   const imgSrc =
-    exp.image ??
-    EXPERIENCE_IMAGES[exp.name] ??
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80'
+    exp.image ?? EXPERIENCE_IMAGES[exp.name] ?? FALLBACK_IMAGE
 
   return (
     <Link

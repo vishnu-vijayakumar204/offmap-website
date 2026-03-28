@@ -10,6 +10,7 @@ import {
   JournalNote,
 } from '@/components/ui/scrapbook'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
+import { ABOUT_IMAGES } from '@/lib/images'
 
 export function AboutSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
@@ -68,7 +69,7 @@ export function AboutSection() {
             <div className="relative h-[460px]">
               {/* Large — back layer */}
               <PolaroidCard
-                src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&q=80"
+                src={ABOUT_IMAGES.large}
                 alt="Himalayan landscape"
                 caption="lost in Himachal"
                 rotation={-3}
@@ -78,7 +79,7 @@ export function AboutSection() {
               />
               {/* Medium — front rotated */}
               <PolaroidCard
-                src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=600&q=80"
+                src={ABOUT_IMAGES.medium}
                 alt="Local village scene"
                 caption="chai stop, Rajasthan"
                 rotation={4}
@@ -88,7 +89,7 @@ export function AboutSection() {
               />
               {/* Small — bottom accent */}
               <PolaroidCard
-                src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+                src={ABOUT_IMAGES.small}
                 alt="Forest trail"
                 caption="the trail less taken"
                 rotation={-1}

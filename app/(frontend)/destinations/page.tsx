@@ -17,6 +17,7 @@ import { WashiTape, SectionLabel, PostageStamp } from '@/components/ui/scrapbook
 import { IndiaMap } from '@/components/ui/IndiaMap'
 import { cn } from '@/lib/utils'
 import { RegionSection, REGION_EXPERIENCES } from '@/components/sections/RegionSection'
+import { HERO_IMAGES } from '@/lib/images'
 
 // ─── Wavy SVG divider ────────────────────────────────────────────────────────
 // position="bottom": honey fill appears at BOTTOM of SVG (fills below waveline)
@@ -68,18 +69,6 @@ const CATEGORIES: Category[] = [
   { label: 'Learning', icon: GraduationCap, color: '#7C3AED', bg: '#EDE9FE', href: '/student-program' },
 ]
 
-// ─── Destination images ───────────────────────────────────────────────────────
-const DESTINATION_IMAGES: Record<string, string> = {
-  'himachal-pradesh':
-    'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&q=80',
-  rajasthan:
-    'https://assets.myntassets.com/assets/images/2026/MARCH/24/JCyziwzs_6ee01729919d469899c817cec3ea5cd8.jpg',
-  uttarakhand:
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
-  kashmir:
-    'https://assets.myntassets.com/assets/images/2026/MARCH/24/D2v6kHyH_d1c879ce666440a292c02cf334ea2085.jpg',
-}
-
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function DestinationsPage() {
@@ -104,7 +93,7 @@ export default function DestinationsPage() {
       {/* ═══ SECTION 1: HERO ═══════════════════════════════════════════════════ */}
       <section className="relative h-[60vh] min-h-[400px] overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=1920&q=80"
+          src={HERO_IMAGES['himachal-pradesh']}
           alt="Himalayan landscape"
           fill
           priority

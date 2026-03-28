@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { MapPin, ChevronLeft, ChevronRight } from 'lucide-react'
 import { REGION_THEMES, type RegionThemeKey } from '@/lib/constants'
+import { EXPERIENCE_IMAGES, FALLBACK_IMAGE } from '@/lib/images'
 import { PostageStamp, StampBadge, JournalNote } from '@/components/ui/scrapbook'
 import { cn } from '@/lib/utils'
 
@@ -21,28 +22,6 @@ export interface Experience {
 interface RegionSectionProps {
   region: RegionThemeKey
   experiences: Experience[]
-}
-
-// ─── Unsplash images per experience name ──────────────────────────────────────
-const EXPERIENCE_IMAGES: Record<string, string> = {
-  'Bir–Barot Trek':
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
-  'Rajgundha Valley':
-    'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80',
-  'Shangarh–Raghupur Fort':
-    'https://images.unsplash.com/photo-1625821059754-af93a95c3faf?w=600&q=80',
-  'Barot Valley':
-    'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80',
-  'Jawai Safari':
-    'https://images.unsplash.com/photo-1549366021-9f761d450615?w=600&q=80',
-  'Udaipur–Mount Abu':
-    'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600&q=80',
-  'Jaisalmer Dunes':
-    'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=600&q=80',
-  'Kasar Devi–Khaliya Top':
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&q=80',
-  'Binsar Wildlife':
-    'https://images.unsplash.com/photo-1602423249797-63f23ff58b0f?w=600&q=80',
 }
 
 // ─── Hardcoded experiences per region (exported for slug page reuse) ──────────
@@ -100,9 +79,7 @@ function ExperienceCard({
   }
 
   const imgSrc =
-    exp.image ??
-    EXPERIENCE_IMAGES[exp.name] ??
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80'
+    exp.image ?? EXPERIENCE_IMAGES[exp.name] ?? FALLBACK_IMAGE
 
   return (
     <Link
