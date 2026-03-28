@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { StampBadge, WashiTape, SectionLabel } from '@/components/ui/scrapbook'
 import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 import { cn } from '@/lib/utils'
+import { BLOG_IMAGES } from '@/lib/images'
 
 interface BlogPost {
   title: string
@@ -24,7 +25,7 @@ const BLOG_POSTS: BlogPost[] = [
     category: 'Himachal Pradesh',
     categoryColor: '#2D6A4F',
     date: 'March 2025',
-    image: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80',
+    image: BLOG_IMAGES.birBarotTrek,
     href: '/blogs/bir-barot-trek',
     rotation: -2,
     washiColor: 'yellow',
@@ -34,8 +35,7 @@ const BLOG_POSTS: BlogPost[] = [
     category: 'Rajasthan',
     categoryColor: '#C1440E',
     date: 'February 2025',
-    image:
-      'https://assets.myntassets.com/assets/images/2026/MARCH/24/cPwCjdUZ_9141407da6e44b8993e93958dda3b3cd.jpg',
+    image: BLOG_IMAGES.jawaiSecret,
     href: '/blogs/jawai-rajasthan',
     rotation: 1,
     washiColor: 'pink',
@@ -45,7 +45,7 @@ const BLOG_POSTS: BlogPost[] = [
     category: 'Travel Philosophy',
     categoryColor: '#1B4FD8',
     date: 'January 2025',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
+    image: BLOG_IMAGES.slowTravel,
     href: '/blogs/slow-travel',
     rotation: -1,
     washiColor: 'blue',

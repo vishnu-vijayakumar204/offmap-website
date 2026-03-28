@@ -8,22 +8,10 @@ import { FEATURED_ROUTES, REGION_THEMES, type RegionThemeKey } from '@/lib/const
 import { PolaroidCard, StampBadge, SectionLabel } from '@/components/ui/scrapbook'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { registerGSAP } from '@/lib/animations'
+import { ROUTE_IMAGES } from '@/lib/images'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
-}
-
-const ROUTE_IMAGES: Record<string, string> = {
-  'bir-barot':
-    'https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=600&q=80',
-  'rajgundha-valley':
-    'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80',
-  'shangarh-raghupur-fort':
-    'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80',
-  jawai:
-    'https://assets.myntassets.com/assets/images/2026/MARCH/24/cPwCjdUZ_9141407da6e44b8993e93958dda3b3cd.jpg',
-  'kasar-devi-khaliya-top':
-    'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80',
 }
 
 const ROUTE_DETAILS: Record<string, { days: string; type: string }> = {

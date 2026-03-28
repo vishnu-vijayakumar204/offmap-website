@@ -16,6 +16,8 @@ import { LOCATIONS, REGION_THEMES, type RegionThemeKey } from '@/lib/constants'
 import { WashiTape, SectionLabel, PostageStamp } from '@/components/ui/scrapbook'
 import { IndiaMap } from '@/components/ui/IndiaMap'
 import { cn } from '@/lib/utils'
+import { RegionSection, REGION_EXPERIENCES } from '@/components/sections/RegionSection'
+import { HERO_IMAGES } from '@/lib/images'
 
 // ─── Wavy SVG divider ────────────────────────────────────────────────────────
 // position="bottom": honey fill appears at BOTTOM of SVG (fills below waveline)
@@ -67,18 +69,6 @@ const CATEGORIES: Category[] = [
   { label: 'Learning', icon: GraduationCap, color: '#7C3AED', bg: '#EDE9FE', href: '/student-program' },
 ]
 
-// ─── Destination images ───────────────────────────────────────────────────────
-const DESTINATION_IMAGES: Record<string, string> = {
-  'himachal-pradesh':
-    'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&q=80',
-  rajasthan:
-    'https://assets.myntassets.com/assets/images/2026/MARCH/24/JCyziwzs_6ee01729919d469899c817cec3ea5cd8.jpg',
-  uttarakhand:
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
-  kashmir:
-    'https://assets.myntassets.com/assets/images/2026/MARCH/24/D2v6kHyH_d1c879ce666440a292c02cf334ea2085.jpg',
-}
-
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function DestinationsPage() {
@@ -103,7 +93,7 @@ export default function DestinationsPage() {
       {/* ═══ SECTION 1: HERO ═══════════════════════════════════════════════════ */}
       <section className="relative h-[60vh] min-h-[400px] overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=1920&q=80"
+          src={HERO_IMAGES['himachal-pradesh']}
           alt="Himalayan landscape"
           fill
           priority
@@ -297,87 +287,32 @@ export default function DestinationsPage() {
         <WavyDivider fill="#FFF8E7" position="bottom" />
       </section>
 
-      {/* ═══ SECTION 5: DESTINATION CARDS (filtered) ══════════════════════════ */}
+      {/* ═══ SECTION 5: REGION SECTIONS ═══════════════════════════════════════ */}
       <section
         ref={cardsSectionRef}
-        className="bg-[#FFF8E7] diagonal-stripes py-16 md:py-24 scroll-mt-16"
+        className="bg-[#FFF8E7] py-16 md:py-24 scroll-mt-16"
       >
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
-            <div>
-              <h2 className="font-display font-bold text-dark text-3xl">
-                {activeRegion === 'all'
-                  ? 'All Destinations'
-                  : REGION_THEMES[activeRegion as RegionThemeKey]?.name ?? 'Destinations'}
-              </h2>
-              <p className="font-handwriting text-dark/50 text-lg mt-1">
-                {filteredLocations.length}{' '}
-                region{filteredLocations.length !== 1 ? 's' : ''} available
-              </p>
-            </div>
-            {activeRegion !== 'all' && (
-              <button
-                onClick={() => setActiveRegion('all')}
-                className="font-body text-sm text-dark/50 hover:text-dark underline transition-colors duration-200"
-              >
-                Show all regions
-              </button>
-            )}
+          <div className="mb-12">
+            <SectionLabel text="Where We Go" style="handwritten" className="block mb-3" />
+            <h2 className="font-display font-bold text-dark text-3xl">
+              {activeRegion === 'all'
+                ? 'All Destinations'
+                : REGION_THEMES[activeRegion as RegionThemeKey]?.name ?? 'Destinations'}
+            </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-            {filteredLocations.map((location, i) => {
-              const theme = REGION_THEMES[location.slug as RegionThemeKey]
-              if (!theme) return null
-              const rotations = ['-2deg', '2deg', '-1deg', '1.5deg']
-              const rotation = rotations[i % rotations.length]
-              return (
-                <Link
-                  key={location.slug}
-                  href={`/destinations/${location.slug}`}
-                  style={
-                    {
-                      '--card-r': rotation,
-                      '--border-c': theme.primary,
-                    } as React.CSSProperties
-                  }
-                  className={cn(
-                    'group block bg-white border-2 border-[var(--border-c)]',
-                    'rotate-[var(--card-r)] hover:rotate-0 hover:scale-[1.02]',
-                    'transition-all duration-300',
-                    'shadow-[2px_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[4px_4px_20px_rgba(0,0,0,0.15)]'
-                  )}
-                >
-                  <div className="relative h-60 overflow-hidden">
-                    <Image
-                      src={DESTINATION_IMAGES[location.slug] ?? ''}
-                      alt={location.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 50vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute top-3 right-3 z-10">
-                      <PostageStamp region={location.slug as RegionThemeKey} />
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <p className="font-handwriting text-[var(--border-c)] text-xs uppercase tracking-wider mb-1">
-                      {theme.label}
-                    </p>
-                    <p className="font-display font-bold text-[var(--border-c)] text-2xl mb-2">
-                      {location.name}
-                    </p>
-                    <p className="font-body text-gray-500 text-sm leading-relaxed mb-4">
-                      {theme.description}
-                    </p>
-                    <p className="font-handwriting text-[var(--border-c)] text-base">
-                      Explore →
-                    </p>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
+          {LOCATIONS.map((location) => (
+            <div
+              key={location.slug}
+              className={activeRegion !== 'all' && activeRegion !== location.slug ? 'hidden' : ''}
+            >
+              <RegionSection
+                region={location.slug as RegionThemeKey}
+                experiences={REGION_EXPERIENCES[location.slug as RegionThemeKey]}
+              />
+            </div>
+          ))}
         </div>
       </section>
 

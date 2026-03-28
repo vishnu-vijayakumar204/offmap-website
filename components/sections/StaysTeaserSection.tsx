@@ -6,27 +6,7 @@ import Link from 'next/link'
 import { PolaroidCard } from '@/components/ui/scrapbook'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { cn } from '@/lib/utils'
-
-const STAY_PHOTOS = [
-  {
-    src: 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=400&q=80',
-    alt: 'Cozy mountain stay',
-    caption: 'waking up to this',
-    rotation: -3,
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-    alt: 'Forest homestay view',
-    caption: 'the view from bed',
-    rotation: 2,
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=400&q=80',
-    alt: 'Local homestay',
-    caption: 'locally rooted',
-    rotation: -1,
-  },
-]
+import { STAY_PHOTOS, STAYS_HERO } from '@/lib/images'
 
 export function StaysTeaserSection() {
   const contentRef = useRef<HTMLDivElement>(null)
@@ -35,7 +15,7 @@ export function StaysTeaserSection() {
   return (
     <section className="relative py-24 md:py-36 bg-dark overflow-hidden">
       <Image
-        src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=1920&q=80"
+        src={STAYS_HERO}
         alt="OffMap stays"
         fill
         priority={false}

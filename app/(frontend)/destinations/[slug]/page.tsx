@@ -1,68 +1,212 @@
+'use client'
+
+import { use } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { MapPin, Calendar, Users } from 'lucide-react'
-import { LOCATIONS, REGION_THEMES, FEATURED_ROUTES, type RegionThemeKey } from '@/lib/constants'
-import { PostageStamp, WashiTape, StampBadge } from '@/components/ui/scrapbook'
+import { MapPin, ChevronLeft, ChevronRight } from 'lucide-react'
+import { REGION_THEMES, LOCATIONS, type RegionThemeKey } from '@/lib/constants'
+import {
+  PostageStamp,
+  PolaroidCard,
+  WashiTape,
+  StampBadge,
+  JournalNote,
+  SectionLabel,
+} from '@/components/ui/scrapbook'
+import { REGION_EXPERIENCES } from '@/components/sections/RegionSection'
+import type { Experience } from '@/components/sections/RegionSection'
+import { cn } from '@/lib/utils'
+import { HERO_IMAGES, POLAROID_IMAGES, EXPERIENCE_IMAGES, FALLBACK_IMAGE } from '@/lib/images'
+import { useRef, useState, useCallback } from 'react'
 
-// ─── Images ───────────────────────────────────────────────────────────────────
-const DESTINATION_IMAGES: Record<string, string> = {
+// ─── Per-region intro subtitles ───────────────────────────────────────────────
+const INTRO_SUBTITLES: Record<string, string> = {
+  'himachal-pradesh': 'Quiet villages, forest trails, slow mornings.',
+  rajasthan: 'Beyond forts — desert, villages, adventure.',
+  kashmir: 'Snow-capped peaks, shikara lakes, saffron fields.',
+  uttarakhand: 'Quieter, raw, spacious.',
+}
+
+// ─── Per-region intro body copy ───────────────────────────────────────────────
+const INTRO_BODY: Record<string, string> = {
   'himachal-pradesh':
-    'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=1920&q=80',
+    'Himachal is less about the postcard views and more about the pace. Villages where time slows, forests you walk through without a plan, and mornings that feel like they belong to you. We explore valleys that don\'t make it to the top of Google results — and that\'s exactly the point.',
   rajasthan:
-    'https://assets.myntassets.com/assets/images/2026/MARCH/24/JCyziwzs_6ee01729919d469899c817cec3ea5cd8.jpg',
-  uttarakhand:
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80',
+    'Beyond the forts and palaces lies a Rajasthan most tourists never see. Leopards at dusk in Jawai, desert sunsets with no crowd, and craft villages where artisans still work the old way. We\'ve walked it before we ever guided anyone through it.',
   kashmir:
-    'https://assets.myntassets.com/assets/images/2026/MARCH/24/D2v6kHyH_d1c879ce666440a292c02cf334ea2085.jpg',
+    'Kashmir is a place you don\'t just visit — you carry it with you long after. Shikara rides at dawn, meadows that stretch into the horizon, and a warmth in the people that no travel guide can capture. We\'re still exploring, and soon we\'ll take you there.',
+  uttarakhand:
+    'Uttarakhand doesn\'t announce itself. It unfolds slowly — dense oak forests, a leopard track on a quiet trail, the sound of a river around a bend. Less touristy than Himachal, just as beautiful. We love it for the space it gives you to think.',
 }
 
-const ROUTE_IMAGES: Record<string, string> = {
-  'bir-barot': 'https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=600&q=80',
-  'rajgundha-valley': 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80',
-  'shangarh-raghupur-fort': 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80',
-  jawai: 'https://assets.myntassets.com/assets/images/2026/MARCH/24/cPwCjdUZ_9141407da6e44b8993e93958dda3b3cd.jpg',
-  'kasar-devi-khaliya-top': 'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80',
+// ─── Per-region activities ────────────────────────────────────────────────────
+interface Activity {
+  label: string
+  emoji: string
 }
 
-const ROUTE_DETAILS: Record<string, { days: string; type: string; tagline: string }> = {
-  'bir-barot': { days: '4 days', type: 'Trek', tagline: 'Through pine forests and alpine meadows' },
-  'rajgundha-valley': { days: '3 days', type: 'Valley Trek', tagline: 'A hidden valley few tourists find' },
-  'shangarh-raghupur-fort': { days: '2 days', type: 'Heritage Walk', tagline: 'Sacred meadow and ancient fort ruins' },
-  jawai: { days: '3 days', type: 'Wildlife', tagline: 'Leopards, temples, and the Bishnoi way of life' },
-  'kasar-devi-khaliya-top': { days: '4 days', type: 'Himalayan Trek', tagline: 'High altitude meadows above Almora' },
+const ACTIVITIES: Record<string, Activity[]> = {
+  'himachal-pradesh': [
+    { label: 'Paragliding', emoji: '🪂' },
+    { label: 'Cycling', emoji: '🚴' },
+    { label: 'Day Hikes', emoji: '🥾' },
+    { label: 'Learn Paragliding', emoji: '✈️' },
+  ],
+  rajasthan: [
+    { label: 'Miniature Painting', emoji: '🎨' },
+    { label: 'Horse Riding', emoji: '🐎' },
+    { label: 'Cooking Workshop', emoji: '🍳' },
+    { label: 'Yoga', emoji: '🧘' },
+    { label: 'Run + Hike', emoji: '🏃' },
+  ],
+  kashmir: [],
+  uttarakhand: [],
 }
 
-// ─── Generate static paths ────────────────────────────────────────────────────
-export function generateStaticParams() {
-  return LOCATIONS.map((l) => ({ slug: l.slug }))
+// ─── WavyDivider (local) ──────────────────────────────────────────────────────
+function WavyDivider({ fill, position = 'bottom' }: { fill: string; position?: 'top' | 'bottom' }) {
+  const bottomPath =
+    'M0,40 C180,80 360,0 540,40 C720,80 900,0 1080,40 C1260,80 1350,20 1440,40 L1440,80 L0,80 Z'
+  const topPath =
+    'M0,40 C180,0 360,80 540,40 C720,0 900,80 1080,40 C1260,0 1350,60 1440,40 L1440,0 L0,0 Z'
+  return (
+    <div className="w-full overflow-hidden leading-none">
+      <svg
+        viewBox="0 0 1440 80"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-14 md:h-20 block"
+      >
+        <path d={position === 'top' ? topPath : bottomPath} fill={fill} />
+      </svg>
+    </div>
+  )
+}
+
+function SlugExperienceCard({
+  exp,
+  region,
+}: {
+  exp: Experience
+  region: RegionThemeKey
+}) {
+  const theme = REGION_THEMES[region]
+
+  if (exp.comingSoon) {
+    return (
+      <div
+        className="flex-shrink-0 w-64 md:w-72 rounded-2xl overflow-hidden bg-white shadow-[var(--shadow-card)] opacity-60"
+        style={{ scrollSnapAlign: 'start' } as React.CSSProperties}
+      >
+        <div className="relative h-48 bg-gray-100 flex items-center justify-center">
+          <span className="text-5xl opacity-20">🗺️</span>
+          <div className="absolute top-3 left-3">
+            <StampBadge text="Stay Tuned" color="#94A3B8" rotation={-3} />
+          </div>
+        </div>
+        <div className="bg-white p-4">
+          <p className="font-heading font-semibold text-dark text-base mb-3">{exp.name}</p>
+          <JournalNote text="we're exploring this one 🗺️" type="sticky" />
+        </div>
+      </div>
+    )
+  }
+
+  const imgSrc =
+    exp.image ?? EXPERIENCE_IMAGES[exp.name] ?? FALLBACK_IMAGE
+
+  return (
+    <Link
+      href={`/destinations/${region}`}
+      style={{ scrollSnapAlign: 'start' } as React.CSSProperties}
+      className={cn(
+        'flex-shrink-0 w-64 md:w-72 rounded-2xl overflow-hidden bg-white',
+        'shadow-[var(--shadow-card)] hover:-translate-y-1 hover:shadow-[var(--shadow-polaroid)]',
+        'transition-all duration-200 group block'
+      )}
+    >
+      <div className="relative h-48 overflow-hidden">
+        <Image
+          src={imgSrc}
+          alt={exp.name}
+          fill
+          sizes="288px"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+        <div className="absolute top-3 left-3">
+          <StampBadge text={exp.type} color={theme.primary} rotation={-3} />
+        </div>
+        <div className="absolute top-3 right-3">
+          <span className="bg-dark/60 text-white font-handwriting text-xs px-2 py-1 rounded-full">
+            {exp.days}
+          </span>
+        </div>
+      </div>
+      <div className="bg-white p-4">
+        <p className="font-heading font-semibold text-dark text-base leading-snug">{exp.name}</p>
+        <p className="font-handwriting text-gray-400 text-sm flex items-center gap-1 mt-1">
+          <MapPin size={12} className="flex-none" />
+          {theme.name}
+        </p>
+        <div className="flex items-center justify-between mt-3">
+          <p style={{ color: theme.primary }} className="font-body text-sm font-bold">
+            From {exp.price}
+          </p>
+          <p style={{ color: theme.primary }} className="font-handwriting text-base">
+            View →
+          </p>
+        </div>
+      </div>
+    </Link>
+  )
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
-interface Props {
+export default function DestinationDetailPage({
+  params,
+}: {
   params: Promise<{ slug: string }>
-}
-
-export default async function DestinationPage({ params }: Props) {
-  const { slug } = await params
+}) {
+  const { slug } = use(params)
 
   const location = LOCATIONS.find((l) => l.slug === slug)
   if (!location) notFound()
 
-  const theme = REGION_THEMES[slug as RegionThemeKey]
+  const regionKey = slug as RegionThemeKey
+  const theme = REGION_THEMES[regionKey]
   if (!theme) notFound()
 
-  const routes = FEATURED_ROUTES.filter((r) => r.location === slug)
-  const heroImage = DESTINATION_IMAGES[slug] ?? DESTINATION_IMAGES['himachal-pradesh']
+  const experiences = REGION_EXPERIENCES[regionKey] ?? []
+  const heroImage = HERO_IMAGES[slug] ?? HERO_IMAGES['himachal-pradesh']
+  const polaroids = POLAROID_IMAGES[slug] ?? POLAROID_IMAGES['himachal-pradesh']
+  const introSubtitle = INTRO_SUBTITLES[slug] ?? theme.description
+  const introBody = INTRO_BODY[slug] ?? ''
+  const activities = ACTIVITIES[slug] ?? []
+
+  // Scroll refs for experiences section
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [scrollPos, setScrollPos] = useState(0)
+  const handleScroll = useCallback(() => {
+    if (scrollRef.current) setScrollPos(scrollRef.current.scrollLeft)
+  }, [])
+  const scrollByAmount = (dir: 'left' | 'right') => {
+    scrollRef.current?.scrollBy({ left: dir === 'left' ? -288 : 288, behavior: 'smooth' })
+  }
+  const isAtStart = scrollPos <= 8
+  const isAtEnd = scrollRef.current
+    ? scrollPos >= scrollRef.current.scrollWidth - scrollRef.current.clientWidth - 8
+    : false
 
   return (
     <main>
 
-      {/* ═══ HERO ══════════════════════════════════════════════════════════════ */}
-      <section className="relative h-[70vh] min-h-[480px] overflow-hidden">
+      {/* ═══ SECTION 1: HERO ═══════════════════════════════════════════════════ */}
+      <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
         <Image
           src={heroImage}
-          alt={location.name}
+          alt={theme.name}
           fill
           priority
           className="object-cover"
@@ -70,234 +214,216 @@ export default async function DestinationPage({ params }: Props) {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/70" />
 
-        <div className="relative z-10 h-full flex flex-col justify-end px-4 pb-16 md:pb-20 max-w-7xl mx-auto w-full">
-          <span className="font-handwriting text-yellow text-xl mb-3 block">
-            {theme.emoji} {theme.label}
+        {/* PostageStamp top-right */}
+        <div className="absolute top-6 right-6 z-10">
+          <PostageStamp region={regionKey} />
+        </div>
+
+        {/* Content bottom-left */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 pb-16 px-6 md:px-12 max-w-3xl">
+          <span className="text-7xl md:text-8xl block mb-3" role="img" aria-label={theme.name}>
+            {theme.emoji}
           </span>
-          <h1 className="font-display font-black text-white text-5xl md:text-7xl lg:text-8xl leading-tight">
-            {location.name}
+          <p style={{ color: theme.accent }} className="font-handwriting text-xl mb-2">
+            {theme.label}
+          </p>
+          <h1 className="font-display font-black text-white text-5xl md:text-7xl leading-none mb-4">
+            {theme.name}
           </h1>
-          {location.intro && (
-            <p className="font-body text-white/80 text-lg mt-3 max-w-xl">
-              {location.intro}
-            </p>
-          )}
-          <div className="flex gap-3 mt-6 flex-wrap">
+          <p className="font-body text-white/80 text-lg max-w-xl mb-8">
+            {introSubtitle}
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <Link
+              href={`#experiences`}
+              className="font-body font-semibold text-dark bg-yellow px-6 py-3 border-2 border-dark inline-block hover:bg-yellow/90 transition-colors duration-200"
+            >
+              Explore Experiences
+            </Link>
             <Link
               href="/contact"
-              style={{ '--tc': theme.primary } as React.CSSProperties}
-              className="font-heading font-semibold text-white bg-[var(--tc)] px-6 py-3 rounded-none border-2 border-[var(--tc)] transition-colors duration-200 hover:bg-transparent text-sm"
+              className="font-body font-semibold text-white px-6 py-3 border-2 border-white inline-block hover:bg-white/10 transition-colors duration-200"
             >
-              Plan a Trip Here →
+              Plan My Trip
             </Link>
-            {routes.length > 0 && (
-              <Link
-                href="#routes"
-                className="font-body text-white border border-white/60 px-6 py-3 rounded-none text-sm transition-colors duration-200 hover:bg-white/10"
-              >
-                See Routes ↓
-              </Link>
-            )}
           </div>
         </div>
 
-        {/* Wavy divider into next section */}
+        {/* Wavy divider into region.bg */}
         <div className="absolute bottom-[-1px] left-0 right-0 z-10">
-          <svg
-            viewBox="0 0 1440 80"
-            preserveAspectRatio="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-14 md:h-20 block"
-          >
-            <path
-              d="M0,40 C180,80 360,0 540,40 C720,80 900,0 1080,40 C1260,80 1350,20 1440,40 L1440,80 L0,80 Z"
-              fill="#FFF8E7"
-            />
-          </svg>
+          <WavyDivider fill={theme.bg} position="bottom" />
         </div>
       </section>
 
-      {/* ═══ OVERVIEW ══════════════════════════════════════════════════════════ */}
-      <section className="bg-[#FFF8E7] py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      {/* ═══ SECTION 2: REGION INTRO ═══════════════════════════════════════════ */}
+      <section style={{ backgroundColor: theme.bg }} className="py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
-            {/* Left — Description */}
-            <div className="lg:col-span-7">
-              <div className="relative inline-block mb-6">
-                <WashiTape color="yellow" rotation={-2} width="w-32" />
-                <span className="absolute inset-0 flex items-center justify-center font-handwriting text-dark/80 text-sm pointer-events-none">
-                  why we love it
-                </span>
-              </div>
-
+            {/* LEFT — text */}
+            <div>
+              <SectionLabel text="about this region" style="handwritten" className="block mb-5" />
               <h2 className="font-display font-bold text-dark text-3xl md:text-4xl leading-tight mb-5">
-                What Makes {location.name} Different
+                {introSubtitle}
               </h2>
-
-              <p className="font-body text-dark/70 text-base leading-relaxed mb-4">
-                {theme.description} We discovered this place slowly — through local
-                connections, on foot, and by staying long enough to understand the
-                rhythm of the place.
+              <p className="font-body text-dark/60 text-base leading-relaxed mb-8">
+                {introBody}
               </p>
-              <p className="font-body text-dark/70 text-base leading-relaxed mb-6">
-                Every OffMap trip here is built around experiences that can&apos;t be
-                replicated. Not tourist spots — real places, real people, real
-                moments.
-              </p>
-
-              <div className="grid grid-cols-3 gap-4">
-                {[
-                  { icon: MapPin, label: 'On-ground scouted' },
-                  { icon: Users, label: 'Small groups only' },
-                  { icon: Calendar, label: 'Seasonal trips' },
-                ].map((item) => {
-                  const Icon = item.icon
-                  return (
-                    <div
-                      key={item.label}
-                      style={{ '--tc': theme.primary } as React.CSSProperties}
-                      className="text-center"
-                    >
-                      <div className="w-12 h-12 rounded-full bg-[var(--tc)]/10 flex items-center justify-center mx-auto mb-2">
-                        <Icon size={20} className="text-[var(--tc)]" />
-                      </div>
-                      <p className="font-body text-dark/60 text-xs text-center leading-tight">
-                        {item.label}
-                      </p>
-                    </div>
-                  )
-                })}
-              </div>
+              <JournalNote
+                text={`${theme.emoji} ${theme.label} — OffMap India`}
+                type="sticky"
+                className="rotate-[2deg]"
+              />
             </div>
 
-            {/* Right — Region stamp card */}
-            <div className="lg:col-span-5">
-              <div
-                style={
-                  {
-                    '--tc': theme.primary,
-                    '--bg': theme.bg,
-                  } as React.CSSProperties
-                }
-                className="bg-[var(--bg)] border-2 border-[var(--tc)] p-8 relative"
+            {/* RIGHT — overlapping polaroids */}
+            <div className="relative flex justify-center items-start h-80 mt-8 lg:mt-0">
+              <PolaroidCard
+                src={polaroids[0]}
+                alt={`${theme.name} landscape`}
+                caption={`${theme.name}, India`}
+                rotation={-5}
+                size="md"
+                washiColor="yellow"
+                className="absolute left-4 top-0 z-10"
+              />
+              <PolaroidCard
+                src={polaroids[1]}
+                alt={`${theme.name} detail`}
+                caption={theme.label}
+                rotation={4}
+                size="md"
+                washiColor="blue"
+                className="absolute right-4 top-8 z-20"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Wavy into white */}
+        <WavyDivider fill="#FFFFFF" position="bottom" />
+      </section>
+
+      {/* ═══ SECTION 3: EXPERIENCES ════════════════════════════════════════════ */}
+      <section id="experiences" className="bg-white py-16 md:py-24 scroll-mt-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="mb-10">
+            <SectionLabel text="Experiences" style="handwritten" className="block mb-3" />
+            <h2 className="font-display font-bold text-dark text-3xl">
+              What to do in {theme.name}
+            </h2>
+          </div>
+
+          {/* Horizontal scroll */}
+          <div className="relative">
+            {!isAtStart && (
+              <button
+                onClick={() => scrollByAmount('left')}
+                className="absolute left-0 top-[96px] -translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-[var(--shadow-card)] flex items-center justify-center hover:shadow-[var(--shadow-polaroid)] transition-shadow duration-200"
+                aria-label="Scroll left"
               >
-                <div className="absolute -top-4 -right-4">
-                  <PostageStamp region={slug as RegionThemeKey} />
-                </div>
+                <ChevronLeft size={18} className="text-dark" />
+              </button>
+            )}
+            {!isAtEnd && experiences.length > 2 && (
+              <button
+                onClick={() => scrollByAmount('right')}
+                className="absolute right-0 top-[96px] translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-[var(--shadow-card)] flex items-center justify-center hover:shadow-[var(--shadow-polaroid)] transition-shadow duration-200"
+                aria-label="Scroll right"
+              >
+                <ChevronRight size={18} className="text-dark" />
+              </button>
+            )}
+            <div
+              ref={scrollRef}
+              onScroll={handleScroll}
+              className="flex gap-4 overflow-x-auto pb-4"
+              style={
+                {
+                  scrollSnapType: 'x mandatory',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                } as React.CSSProperties
+              }
+            >
+              {experiences.map((exp) => (
+                <SlugExperienceCard key={exp.name} exp={exp} region={regionKey} />
+              ))}
+            </div>
+          </div>
+        </div>
 
-                <StampBadge
-                  text={theme.label}
-                  color={theme.primary}
-                  rotation={-3}
-                  className="mb-5"
-                />
+        {/* Wavy into region.bg */}
+        <WavyDivider fill={theme.bg} position="bottom" />
+      </section>
 
-                <p className="font-display font-bold text-[var(--tc)] text-2xl mb-3">
-                  {location.name}
-                </p>
-                <p className="font-body text-dark/60 text-sm leading-relaxed mb-6">
-                  {theme.description}
-                </p>
+      {/* ═══ SECTION 4: ACTIVITIES GRID ════════════════════════════════════════ */}
+      <section style={{ backgroundColor: theme.bg }} className="py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="text-center mb-10">
+            <SectionLabel text="Things To Do" style="handwritten" className="block mb-3" />
+            <h2 className="font-display font-bold text-dark text-3xl">
+              Activities in {theme.name}
+            </h2>
+          </div>
 
-                <div className="border-t border-[var(--tc)]/20 pt-4">
-                  <p className="font-handwriting text-[var(--tc)] text-base">
-                    Best time: Oct–Jun (varies by route)
+          {activities.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-3xl mx-auto">
+              {activities.map((act) => (
+                <div
+                  key={act.label}
+                  style={
+                    {
+                      '--cat': theme.primary,
+                      '--cat-bg': theme.cardBg,
+                    } as React.CSSProperties
+                  }
+                  className={cn(
+                    'bg-white rounded-2xl p-5 text-center',
+                    'shadow-[var(--shadow-card)]',
+                    'hover:-translate-y-1 hover:shadow-[var(--shadow-polaroid)]',
+                    'transition-all duration-200'
+                  )}
+                >
+                  <span className="text-3xl block mb-2">{act.emoji}</span>
+                  <p className="font-heading font-semibold text-dark text-xs leading-tight">
+                    {act.label}
                   </p>
                 </div>
-              </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="text-center py-12">
+              <JournalNote
+                text="Activities coming soon — we're still exploring! 🗺️"
+                type="sticky"
+                className="inline-block mx-auto"
+              />
+            </div>
+          )}
         </div>
+
+        {/* Wavy into region.primary */}
+        <WavyDivider fill={theme.primary} position="bottom" />
       </section>
 
-      {/* ═══ FEATURED ROUTES ═══════════════════════════════════════════════════ */}
-      {routes.length > 0 && (
-        <section
-          id="routes"
-          className="bg-[#E8F4F0] py-16 md:py-24 scroll-mt-16"
-        >
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="mb-10">
-              <span className="font-handwriting text-blue text-xl font-bold block mb-2">
-                Experiences in {location.name} →
-              </span>
-              <h2 className="font-display font-bold text-dark text-3xl">
-                Routes We&apos;ve Fallen in Love With
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {routes.map((route) => {
-                const details = ROUTE_DETAILS[route.slug]
-                const img = ROUTE_IMAGES[route.slug]
-                return (
-                  <Link
-                    key={route.slug}
-                    href={`/experiences/${route.slug}`}
-                    style={
-                      { '--tc': theme.primary } as React.CSSProperties
-                    }
-                    className="group block bg-white border-2 border-[var(--tc)] hover:shadow-[var(--shadow-polaroid)] transition-shadow duration-200"
-                  >
-                    <div className="relative h-48 overflow-hidden">
-                      {img && (
-                        <Image
-                          src={img}
-                          alt={route.name}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      )}
-                    </div>
-                    <div className="p-5">
-                      <p className="font-display font-bold text-dark text-lg mb-1">
-                        {route.name}
-                      </p>
-                      {details && (
-                        <>
-                          <p className="font-body text-gray-500 text-xs mb-2">
-                            {details.days} · {details.type}
-                          </p>
-                          <p className="font-handwriting text-dark/50 text-sm mb-4">
-                            {details.tagline}
-                          </p>
-                        </>
-                      )}
-                      <p className="font-handwriting text-[var(--tc)] text-sm">
-                        View Experience →
-                      </p>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ═══ CTA ═══════════════════════════════════════════════════════════════ */}
-      <section
-        style={{ '--tc': theme.primary } as React.CSSProperties}
-        className="bg-[var(--tc)] py-16 md:py-20"
-      >
+      {/* ═══ SECTION 5: CTA ════════════════════════════════════════════════════ */}
+      <section style={{ backgroundColor: theme.primary }} className="py-20 md:py-28">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <p className="font-handwriting text-white/70 text-xl mb-4">
-            Ready to go?
-          </p>
-          <h2 className="font-display font-black text-white text-4xl md:text-5xl leading-tight mb-6">
-            Let&apos;s Plan Your {location.name} Trip
+          <div className="mb-4">
+            <WashiTape color="yellow" rotation={-1} width="w-32" className="mx-auto mb-6" />
+          </div>
+          <h2 className="font-display font-black text-white text-4xl md:text-5xl leading-tight mb-3">
+            Ready for {theme.name}?
           </h2>
-          <p className="font-body text-white/80 text-base mb-8 leading-relaxed">
-            We&apos;ll help you figure out when to go, what to carry, and how to
-            make the most of every day there.
+          <p className="font-handwriting text-white/80 text-2xl mb-10">
+            let&apos;s make it happen →
           </p>
           <Link
-            href="/contact"
-            className="font-heading font-semibold text-[var(--tc)] bg-white px-8 py-3 rounded-none border-2 border-white inline-block transition-colors duration-200 hover:bg-transparent hover:text-white"
+            href={`/contact?destination=${slug}`}
+            className="font-body font-semibold text-dark bg-white px-8 py-4 border-2 border-white inline-block hover:bg-transparent hover:text-white transition-colors duration-300"
           >
-            Plan With Us →
+            Plan My {theme.name} Trip
           </Link>
         </div>
       </section>
