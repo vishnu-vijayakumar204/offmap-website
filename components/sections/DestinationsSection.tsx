@@ -3,8 +3,9 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { LOCATIONS } from '@/lib/constants'
-import { Badge } from '@/components/ui/Badge'
+import { LOCATIONS, REGION_THEMES, type RegionThemeKey } from '@/lib/constants'
+import { TornEdge, StampBadge, WashiTape, SectionLabel } from '@/components/ui/scrapbook'
+import { PostageStamp } from '@/components/ui/scrapbook'
 import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 import { cn } from '@/lib/utils'
 
@@ -19,57 +20,108 @@ const DESTINATION_IMAGES: Record<string, string> = {
     'https://assets.myntassets.com/assets/images/2026/MARCH/24/D2v6kHyH_d1c879ce666440a292c02cf334ea2085.jpg',
 }
 
+const CARD_ROTATIONS: Record<string, string> = {
+  'himachal-pradesh': '-2deg',
+  rajasthan: '2deg',
+  kashmir: '-1deg',
+  uttarakhand: '1.5deg',
+}
+
+const CARD_OFFSETS: Record<string, string> = {
+  'himachal-pradesh': '',
+  rajasthan: 'mt-12',
+  kashmir: 'mt-6',
+  uttarakhand: 'mt-16',
+}
+
 export function DestinationsSection() {
-  const sectionRef = useRef<HTMLDivElement>(null)
-  useStaggerReveal(sectionRef)
+  const gridRef = useRef<HTMLDivElement>(null)
+  useStaggerReveal(gridRef)
 
   return (
-    <section className="bg-offwhite py-16 md:py-24">
-      <div className="max-w-7xl mx-auto px-4">
-        <p className="text-primary text-xs uppercase tracking-widest mb-3">
-          DESTINATIONS
-        </p>
-        <h2 className="font-heading font-bold text-3xl md:text-4xl text-dark mb-10">
-          Pick a direction. We&apos;ll show you a different side of it.
-        </h2>
+    <section className="bg-[#FFF8E7] diagonal-stripes">
+      <TornEdge position="top" color="#FFF8E7" />
 
-        <div ref={sectionRef} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {LOCATIONS.map((location) => (
-            <Link
-              key={location.slug}
-              href={`/destinations/${location.slug}`}
-              className="block"
-            >
-              <div className="relative rounded-3xl overflow-hidden aspect-[4/3] group cursor-pointer">
-                <Image
-                  src={DESTINATION_IMAGES[location.slug] ?? ''}
-                  alt={location.name}
-                  fill
-                  sizes="(max-width: 640px) 100vw, 50vw"
-                  className={cn(
-                    'object-cover transition-transform duration-500 group-hover:scale-105'
-                  )}
-                />
-                {/* Dark gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+      <div className="max-w-7xl mx-auto px-4 pt-4 pb-20 md:pb-28">
+        {/* Header */}
+        <div className="mb-12">
+          <div className="relative inline-block mb-6">
+            <WashiTape color="yellow" rotation={-2} width="w-44" />
+            <span className="absolute inset-0 flex items-center justify-center font-handwriting text-dark/80 text-sm pointer-events-none">
+              Unmapped awaits
+            </span>
+          </div>
 
-                {/* Bottom content */}
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <p className="font-heading font-bold text-white text-xl">
+          <SectionLabel text="WANDERLUST" style="stamp" className="mb-4 block" />
+
+          <h2 className="font-display font-black text-dark text-4xl md:text-5xl mt-5">
+            Pick your direction
+          </h2>
+        </div>
+
+        {/* Scattered destination cards */}
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6"
+        >
+          {LOCATIONS.map((location) => {
+            const theme = REGION_THEMES[location.slug as RegionThemeKey]
+            if (!theme) return null
+            const rotation = CARD_ROTATIONS[location.slug] ?? '0deg'
+            const offset = CARD_OFFSETS[location.slug] ?? ''
+
+            return (
+              <Link
+                key={location.slug}
+                href={`/destinations/${location.slug}`}
+                style={
+                  {
+                    '--card-r': rotation,
+                    '--border-c': theme.primary,
+                  } as React.CSSProperties
+                }
+                className={cn(
+                  'group block bg-white',
+                  'border-2 border-[var(--border-c)]',
+                  'rotate-[var(--card-r)] hover:rotate-0 hover:scale-[1.02]',
+                  'transition-all duration-300',
+                  'shadow-[2px_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[4px_4px_20px_rgba(0,0,0,0.15)]',
+                  offset
+                )}
+              >
+                {/* Image */}
+                <div className="relative h-52 overflow-hidden">
+                  <Image
+                    src={DESTINATION_IMAGES[location.slug] ?? ''}
+                    alt={location.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {/* PostageStamp overlay top-right */}
+                  <div className="absolute top-3 right-3 z-10">
+                    <PostageStamp region={location.slug as RegionThemeKey} />
+                  </div>
+                </div>
+
+                {/* Card content */}
+                <div className="p-5">
+                  <p className="font-handwriting text-[var(--border-c)] text-xs uppercase tracking-wider mb-1">
+                    {theme.label}
+                  </p>
+                  <p className="font-display font-bold text-[var(--border-c)] text-2xl mb-2">
                     {location.name}
                   </p>
-                  {location.intro ? (
-                    <p className="text-white/70 text-sm mt-1">{location.intro}</p>
-                  ) : (
-                    <Badge variant="yellow" className="mt-1">
-                      Coming Soon
-                    </Badge>
-                  )}
-                  <p className="text-white/80 text-sm mt-3">Explore →</p>
+                  <p className="font-body text-gray-500 text-sm leading-relaxed mb-4">
+                    {theme.description}
+                  </p>
+                  <p className="font-handwriting text-[var(--border-c)] text-base">
+                    Explore →
+                  </p>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
         </div>
       </div>
     </section>

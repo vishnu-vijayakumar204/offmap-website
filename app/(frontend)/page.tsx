@@ -21,8 +21,8 @@ export default function HomePage() {
       <FeaturedExperiencesSection />
       <StaysTeaserSection />
       <StudentProgramSection />
-      <BlogsTeaserSection />
       <TestimonialsSection />
+      <BlogsTeaserSection />
       <FinalCtaSection />
     </main>
   )

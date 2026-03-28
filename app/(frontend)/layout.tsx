@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
-import { Poppins } from "next/font/google"
-import { DM_Sans } from "next/font/google"
+import { Poppins, DM_Sans, Fraunces, Caveat } from "next/font/google"
 import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider"
 import Navbar from "@/components/layout/Navbar"
 import Footer from "@/components/layout/Footer"
@@ -15,7 +14,21 @@ const poppins = Poppins({
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   variable: "--font-dm-sans",
+})
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-fraunces",
+})
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-caveat",
 })
 
 export const metadata: Metadata = {
@@ -30,7 +43,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} ${dmSans.variable} antialiased`}>
+      <body
+        className={`${poppins.variable} ${dmSans.variable} ${fraunces.variable} ${caveat.variable} antialiased`}
+      >
         <SmoothScrollProvider>
           <ScrollProgressBar />
           <Navbar />

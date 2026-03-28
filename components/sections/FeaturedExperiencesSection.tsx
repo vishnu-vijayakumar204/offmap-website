@@ -2,11 +2,10 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { FEATURED_ROUTES } from '@/lib/constants'
-import { Badge } from '@/components/ui/Badge'
+import { FEATURED_ROUTES, REGION_THEMES, type RegionThemeKey } from '@/lib/constants'
+import { PolaroidCard, StampBadge, SectionLabel } from '@/components/ui/scrapbook'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { registerGSAP } from '@/lib/animations'
 
@@ -27,12 +26,22 @@ const ROUTE_IMAGES: Record<string, string> = {
     'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80',
 }
 
-function toTitleCase(str: string): string {
-  return str
-    .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
+const ROUTE_DETAILS: Record<string, { days: string; type: string }> = {
+  'bir-barot': { days: '4 days', type: 'Trek' },
+  'rajgundha-valley': { days: '3 days', type: 'Valley Trek' },
+  'shangarh-raghupur-fort': { days: '2 days', type: 'Heritage Walk' },
+  jawai: { days: '3 days', type: 'Wildlife' },
+  'kasar-devi-khaliya-top': { days: '4 days', type: 'Himalayan Trek' },
 }
+
+const ROTATIONS = [-3, 2, -1, 3, -2]
+const WASHI_COLORS: Array<'yellow' | 'blue' | undefined> = [
+  'yellow',
+  undefined,
+  'blue',
+  undefined,
+  'yellow',
+]
 
 export function FeaturedExperiencesSection() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -71,46 +80,15 @@ export function FeaturedExperiencesSection() {
     return () => ctx.revert()
   }, [])
 
-  const cards = FEATURED_ROUTES.map((route) => (
-    <Link
-      key={route.slug}
-      href={`/experiences/${route.slug}`}
-      className="flex-none w-[280px] md:w-[340px] rounded-2xl overflow-hidden bg-white shadow-card hover:shadow-card-hover transition-shadow duration-200"
-    >
-      <div className="relative h-[380px]">
-        <Image
-          src={ROUTE_IMAGES[route.slug] ?? ''}
-          alt={route.name}
-          fill
-          sizes="340px"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-      </div>
-      <div className="p-4">
-        <Badge variant="default">{toTitleCase(route.location)}</Badge>
-        <p className="font-heading font-semibold text-dark text-base mt-2">
-          {route.name}
-        </p>
-        <p className="text-primary text-sm mt-2 font-medium">
-          View Experience →
-        </p>
-      </div>
-    </Link>
-  ))
-
   return (
-    <section ref={sectionRef} className="bg-white">
+    <section ref={sectionRef} className="bg-[#FDF0E8]">
       {/* Heading — always in normal flow */}
       <div className="max-w-7xl mx-auto px-4 pt-16 md:pt-24 pb-8">
         <div ref={headingRef}>
-          <p className="text-primary text-xs uppercase tracking-widest mb-3">
-            FEATURED EXPERIENCES
+          <SectionLabel text="Featured Routes" style="handwritten" className="mb-3 block" />
+          <p className="font-handwriting text-dark/50 text-xl mt-2">
+            grab a postcard &amp; go
           </p>
-          <h2 className="font-heading font-bold text-3xl md:text-4xl text-dark">
-            These aren&apos;t fixed itineraries. They&apos;re routes we&apos;ve
-            fallen in love with.
-          </h2>
         </div>
       </div>
 
@@ -118,9 +96,49 @@ export function FeaturedExperiencesSection() {
       <div className="overflow-x-auto md:overflow-visible pb-0">
         <div
           ref={trackRef}
-          className="flex gap-6 px-4 md:px-16 pb-16 w-max"
+          className="flex gap-10 px-4 md:px-16 pb-16 pt-6 w-max items-start"
         >
-          {cards}
+          {FEATURED_ROUTES.map((route, i) => {
+            const theme = REGION_THEMES[route.location as RegionThemeKey]
+            const details = ROUTE_DETAILS[route.slug]
+            return (
+              <Link
+                key={route.slug}
+                href={`/experiences/${route.slug}`}
+                className="flex-none block"
+              >
+                <div className="relative">
+                  <PolaroidCard
+                    src={ROUTE_IMAGES[route.slug] ?? ''}
+                    alt={route.name}
+                    caption={route.name}
+                    rotation={ROTATIONS[i] ?? 0}
+                    size="md"
+                    washiColor={WASHI_COLORS[i]}
+                  />
+                  {/* Location stamp — bottom right of polaroid */}
+                  {theme && (
+                    <div className="absolute -bottom-3 -right-3 z-20">
+                      <StampBadge
+                        text={theme.label}
+                        color={theme.primary}
+                        rotation={4}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Route info below card */}
+                {details && (
+                  <div className="mt-6 px-1">
+                    <p className="font-body text-gray-500 text-xs">
+                      {details.days} · {details.type}
+                    </p>
+                  </div>
+                )}
+              </Link>
+            )
+          })}
         </div>
       </div>
     </section>

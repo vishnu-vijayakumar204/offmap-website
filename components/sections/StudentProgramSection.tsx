@@ -2,35 +2,52 @@
 
 import { useRef } from 'react'
 import Link from 'next/link'
-import { GraduationCap } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/Button'
+import { TornEdge, StampBadge, JournalNote } from '@/components/ui/scrapbook'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
-import { cn } from '@/lib/utils'
 
 export function StudentProgramSection() {
   const contentRef = useRef<HTMLDivElement>(null)
   useScrollAnimation(contentRef)
 
   return (
-    <section className="bg-offwhite py-16 md:py-24">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="relative bg-[#F59E0B] overflow-hidden">
+      <TornEdge position="top" color="#F59E0B" />
+
+      {/* Decorative background emoji */}
+      <span className="absolute top-8 right-4 md:right-8 text-9xl opacity-10 select-none pointer-events-none">
+        🎒
+      </span>
+
+      <div className="max-w-7xl mx-auto px-4 pt-12 pb-20 md:pb-28">
         <div ref={contentRef} className="text-center max-w-2xl mx-auto">
-          <GraduationCap size={40} className="text-primary mb-4 mx-auto" />
-          <p className="text-primary text-xs uppercase tracking-widest mb-3">
-            STUDENT PROGRAM
-          </p>
-          <h2 className="font-heading font-bold text-3xl md:text-4xl text-dark mb-4">
-            Learning hits different outside classrooms.
+          <StampBadge
+            text="Student Program"
+            color="#0F172A"
+            rotation={-2}
+            className="mb-6"
+          />
+
+          <h2 className="font-display font-black text-dark text-4xl md:text-5xl leading-tight mt-6">
+            Learning hits different
+            <br />
+            outside classrooms.
           </h2>
-          <p className="text-muted text-lg max-w-xl mx-auto mb-8">
-            We design school and college programs that go beyond textbooks. Real
-            terrain, real communities, real learning.
+
+          <p className="font-body text-dark/70 text-base mt-5 mb-8 leading-relaxed">
+            We design purposeful travel programs for schools and colleges — combining real
+            terrain, cultural immersion, and reflection. No textbook can replicate a
+            Himalayan trail or a night under desert stars.
           </p>
+
+          <div className="flex justify-center mb-8">
+            <JournalNote text="real terrain, real learning 📚" type="sticky" />
+          </div>
+
           <Link
             href="/student-program"
-            className={cn(buttonVariants({ variant: 'primary', size: 'lg' }))}
+            className="font-heading font-semibold text-white bg-dark border-2 border-dark px-8 py-3 rounded-none inline-block transition-colors duration-200 hover:bg-dark/85"
           >
-            Plan a School Trip
+            Plan a School Trip →
           </Link>
         </div>
       </div>

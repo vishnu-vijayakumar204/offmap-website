@@ -3,9 +3,30 @@
 import { useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/Button'
+import { PolaroidCard } from '@/components/ui/scrapbook'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { cn } from '@/lib/utils'
+
+const STAY_PHOTOS = [
+  {
+    src: 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=400&q=80',
+    alt: 'Cozy mountain stay',
+    caption: 'waking up to this',
+    rotation: -3,
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+    alt: 'Forest homestay view',
+    caption: 'the view from bed',
+    rotation: 2,
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=400&q=80',
+    alt: 'Local homestay',
+    caption: 'locally rooted',
+    rotation: -1,
+  },
+]
 
 export function StaysTeaserSection() {
   const contentRef = useRef<HTMLDivElement>(null)
@@ -18,30 +39,47 @@ export function StaysTeaserSection() {
         alt="OffMap stays"
         fill
         priority={false}
-        className="object-cover opacity-40"
+        className="object-cover opacity-30"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/50 to-dark/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-dark/95 via-dark/60 to-dark/30" />
+
       <div
         ref={contentRef}
         className="relative z-10 max-w-7xl mx-auto px-4 text-center"
       >
-        <h2 className="font-heading font-bold text-white text-3xl md:text-5xl mb-6 max-w-3xl mx-auto leading-tight">
+        <h2 className="font-display font-bold text-white text-4xl md:text-5xl mb-6 max-w-3xl mx-auto leading-tight">
           Where you stay decides how deeply you experience a place.
         </h2>
-        <p className="text-white/70 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-          Different stories. Different reasons. Same feeling when they arrive.
-          A sense of slowing down. Of belonging, even if it&apos;s just for a few days.
+
+        {/* 3 polaroid cards in a row */}
+        <div className="flex items-end justify-center gap-2 md:gap-4 my-10 flex-wrap">
+          {STAY_PHOTOS.map((photo, i) => (
+            <PolaroidCard
+              key={i}
+              src={photo.src}
+              alt={photo.alt}
+              caption={photo.caption}
+              rotation={photo.rotation}
+              size="sm"
+              className="flex-none"
+            />
+          ))}
+        </div>
+
+        {/* Philosophy points */}
+        <p className="font-handwriting text-white/70 text-lg md:text-xl mb-10">
+          Fewer stays, better ones · Locally rooted · Experience-first
         </p>
-        <ul className="flex flex-wrap justify-center gap-x-8 gap-y-2 mb-10 text-white/60 text-sm">
-          <li className="flex items-center gap-2"><span className="text-yellow">—</span> Fewer stays, better ones</li>
-          <li className="flex items-center gap-2"><span className="text-yellow">—</span> Locally rooted</li>
-          <li className="flex items-center gap-2"><span className="text-yellow">—</span> Experience-first</li>
-        </ul>
+
         <Link
           href="/stays"
-          className={cn(buttonVariants({ variant: 'secondary', size: 'lg' }))}
+          className={cn(
+            'font-display italic font-bold text-xl text-yellow',
+            'transition-colors duration-200 hover:text-yellow/70',
+            'inline-block'
+          )}
         >
-          Explore Stays
+          Come Stay With Us →
         </Link>
       </div>
     </section>
