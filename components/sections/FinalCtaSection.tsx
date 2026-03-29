@@ -20,7 +20,7 @@ export function FinalCtaSection() {
     if (reduced) return
 
     const ctx = gsap.context(() => {
-      const st = { trigger: sectionRef.current, start: 'top 80%', toggleActions: 'play none none none' }
+      const st = { trigger: sectionRef.current, start: 'top bottom', once: true }
 
       // 1. Line 1: 3D word flip (rotateX 90 → 0)
       if (line1Ref.current) {

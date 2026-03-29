@@ -33,7 +33,7 @@ export function AboutSection() {
     if (reduced) return
 
     const ctx = gsap.context(() => {
-      const st = { trigger: sectionRef.current, start: 'top 75%', toggleActions: 'play none none none' }
+      const st = { trigger: sectionRef.current, start: 'top bottom', once: true }
 
       // 1. Journal panel: clip-path wipe from left
       if (journalRef.current) {
@@ -65,7 +65,7 @@ export function AboutSection() {
       }
 
       // 8-10. Polaroid cards: each enters from different direction
-      const polSt = { trigger: sectionRef.current, start: 'top 68%', toggleActions: 'play none none none' }
+      const polSt = { trigger: sectionRef.current, start: 'top bottom', once: true }
       if (polaroidLgRef.current) {
         gsap.from(polaroidLgRef.current, { x: -50, y: 70, rotation: -12, opacity: 0, duration: 0.95, ease: 'back.out(1.2)', delay: 0.35, scrollTrigger: polSt })
       }

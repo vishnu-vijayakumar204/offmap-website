@@ -22,7 +22,7 @@ export function StudentProgramSection() {
     if (reduced) return
 
     const ctx = gsap.context(() => {
-      const st = { trigger: sectionRef.current, start: 'top 75%', toggleActions: 'play none none none' }
+      const st = { trigger: sectionRef.current, start: 'top bottom', once: true }
 
       // 1. Emoji: drop from top with bounce
       if (emojiRef.current) {

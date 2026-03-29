@@ -40,7 +40,7 @@ export function StaysTeaserSection() {
         })
       }
 
-      const st = { trigger: sectionRef.current, start: 'top 75%', toggleActions: 'play none none none' }
+      const st = { trigger: sectionRef.current, start: 'top bottom', once: true }
 
       // 2. Headline: word-by-word reveal
       if (headlineRef.current) {
@@ -113,8 +113,8 @@ export function StaysTeaserSection() {
           ref={headlineRef}
           className="font-display font-bold text-white text-4xl md:text-5xl mb-6 max-w-3xl mx-auto leading-tight"
         >
-          {['Where', 'you', 'stay', 'decides', 'how', 'deeply', 'you', 'experience', 'a', 'place.'].map((w) => (
-            <span key={w} className="inline-block overflow-hidden align-bottom mr-[0.22em] last:mr-0">
+          {['Where', 'you', 'stay', 'decides', 'how', 'deeply', 'you', 'experience', 'a', 'place.'].map((w, index) => (
+            <span key={w + index} className="inline-block overflow-hidden align-bottom mr-[0.22em] last:mr-0">
               <span className="stays-word inline-block">{w}</span>
             </span>
           ))}

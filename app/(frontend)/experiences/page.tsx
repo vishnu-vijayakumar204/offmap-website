@@ -312,8 +312,8 @@ export default function ExperiencesPage() {
             ease: 'power3.inOut',
             scrollTrigger: {
               trigger: featuredRef.current,
-              start: 'top 75%',
-              toggleActions: 'play none none none',
+              start: 'top bottom',
+              once: true,
             },
           }
         )
@@ -329,8 +329,8 @@ export default function ExperiencesPage() {
             delay: 0.6,
             scrollTrigger: {
               trigger: featuredRef.current,
-              start: 'top 75%',
-              toggleActions: 'play none none none',
+              start: 'top bottom',
+              once: true,
             },
           })
         }
@@ -347,8 +347,8 @@ export default function ExperiencesPage() {
           ease: 'power2.out',
           scrollTrigger: {
             trigger: featuredRef.current,
-            start: 'top 72%',
-            toggleActions: 'play none none none',
+            start: 'top bottom',
+            once: true,
           },
         })
       }
@@ -363,8 +363,8 @@ export default function ExperiencesPage() {
           ease: 'power2.out',
           scrollTrigger: {
             trigger: gridHeaderRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
+            start: 'top bottom',
+            once: true,
           },
         })
       }
@@ -382,8 +382,8 @@ export default function ExperiencesPage() {
             ease: 'power2.out',
             scrollTrigger: {
               trigger: heading,
-              start: 'top 85%',
-              toggleActions: 'play none none none',
+              start: 'top bottom',
+              once: true,
             },
           })
         }
@@ -395,8 +395,8 @@ export default function ExperiencesPage() {
           ease: 'back.out(1.5)',
           scrollTrigger: {
             trigger: carouselRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
+            start: 'top bottom',
+            once: true,
           },
         })
       }
@@ -416,8 +416,8 @@ export default function ExperiencesPage() {
             ease: 'bounce.out',
             scrollTrigger: {
               trigger: studentRef.current,
-              start: 'top 75%',
-              toggleActions: 'play none none none',
+              start: 'top bottom',
+              once: true,
             },
           })
         }
@@ -430,8 +430,8 @@ export default function ExperiencesPage() {
             ease: 'power2.out',
             scrollTrigger: {
               trigger: studentRef.current,
-              start: 'top 72%',
-              toggleActions: 'play none none none',
+              start: 'top bottom',
+              once: true,
             },
           })
         }
@@ -444,8 +444,8 @@ export default function ExperiencesPage() {
             ease: 'power2.out',
             scrollTrigger: {
               trigger: studentRef.current,
-              start: 'top 72%',
-              toggleActions: 'play none none none',
+              start: 'top bottom',
+              once: true,
             },
           })
         }
@@ -468,8 +468,8 @@ export default function ExperiencesPage() {
             transformOrigin: '50% 50% -30px',
             scrollTrigger: {
               trigger: ctaRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none none',
+              start: 'top bottom',
+              once: true,
             },
           })
         }
@@ -482,8 +482,8 @@ export default function ExperiencesPage() {
             ease: 'power2.out',
             scrollTrigger: {
               trigger: ctaRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none none',
+              start: 'top bottom',
+              once: true,
             },
           })
         }
@@ -497,8 +497,8 @@ export default function ExperiencesPage() {
             delay: 0.5,
             scrollTrigger: {
               trigger: ctaRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none none',
+              start: 'top bottom',
+              once: true,
             },
           })
         }

@@ -67,7 +67,7 @@ export function TestimonialsSection() {
     if (reduced) return
 
     const ctx = gsap.context(() => {
-      const st = { trigger: sectionRef.current, start: 'top 78%', toggleActions: 'play none none none' }
+      const st = { trigger: sectionRef.current, start: 'top bottom', once: true }
 
       // 1. Label fades up
       if (labelRef.current) {

@@ -40,7 +40,7 @@ export function DestinationsSection() {
     if (reduced) return
 
     const ctx = gsap.context(() => {
-      const st = { trigger: sectionRef.current, start: 'top 80%', toggleActions: 'play none none none' }
+      const st = { trigger: sectionRef.current, start: 'top bottom', once: true }
 
       // 1. WashiTape: scaleX from 0
       if (washiRef.current) {
@@ -67,7 +67,7 @@ export function DestinationsSection() {
       if (gridRef.current) {
         gsap.from(gridRef.current.querySelectorAll('.dest-card'), {
           y: 80, opacity: 0, scale: 0.92, stagger: 0.13, duration: 0.7, ease: 'back.out(1.1)',
-          scrollTrigger: { trigger: gridRef.current, start: 'top 82%', toggleActions: 'play none none none' },
+          scrollTrigger: { trigger: gridRef.current, start: 'top bottom', once: true },
         })
       }
     })

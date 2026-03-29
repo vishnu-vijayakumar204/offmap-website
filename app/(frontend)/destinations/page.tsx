@@ -164,8 +164,8 @@ export default function DestinationsPage() {
           ease: 'power2.out',
           scrollTrigger: {
             trigger: mapSectionRef.current,
-            start: 'top 75%',
-            toggleActions: 'play none none none',
+            start: 'top bottom',
+            once: true,
           },
         })
       }
@@ -179,8 +179,8 @@ export default function DestinationsPage() {
           ease: 'back.out(1.2)',
           scrollTrigger: {
             trigger: mapSectionRef.current,
-            start: 'top 72%',
-            toggleActions: 'play none none none',
+            start: 'top bottom',
+            once: true,
           },
         })
       }
@@ -195,8 +195,8 @@ export default function DestinationsPage() {
           ease: 'back.out(1.5)',
           scrollTrigger: {
             trigger: catSectionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
+            start: 'top bottom',
+            once: true,
           },
         })
       }
