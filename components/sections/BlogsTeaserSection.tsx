@@ -66,11 +66,11 @@ export function BlogsTeaserSection() {
   const headerRef   = useRef<HTMLDivElement>(null)
   const stampRef    = useRef<HTMLSpanElement>(null)
   const captionRef  = useRef<HTMLParagraphElement>(null)
-  const cardRefs    = [
-    useRef<HTMLAnchorElement>(null),
-    useRef<HTMLAnchorElement>(null),
-    useRef<HTMLAnchorElement>(null),
-  ]
+  // Declare each ref individually — arrays of useRef() break Rules of Hooks
+  const card0Ref    = useRef<HTMLAnchorElement>(null)
+  const card1Ref    = useRef<HTMLAnchorElement>(null)
+  const card2Ref    = useRef<HTMLAnchorElement>(null)
+  const cardRefs    = [card0Ref, card1Ref, card2Ref]
 
   useEffect(() => {
     registerGSAP()

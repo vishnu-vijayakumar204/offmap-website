@@ -55,11 +55,11 @@ function StarRating() {
 export function TestimonialsSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const labelRef   = useRef<HTMLSpanElement>(null)
-  const noteRefs   = [
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-  ]
+  // Declare each ref individually — arrays of useRef() break Rules of Hooks
+  const note0Ref   = useRef<HTMLDivElement>(null)
+  const note1Ref   = useRef<HTMLDivElement>(null)
+  const note2Ref   = useRef<HTMLDivElement>(null)
+  const noteRefs   = [note0Ref, note1Ref, note2Ref]
 
   useEffect(() => {
     registerGSAP()
