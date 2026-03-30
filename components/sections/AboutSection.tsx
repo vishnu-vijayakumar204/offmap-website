@@ -3,7 +3,6 @@
 import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   PolaroidCard,
   WashiTape,
@@ -47,33 +46,33 @@ export function AboutSection() {
       // 2. WashiTape: scaleX from 0
       if (washiRef.current) {
         gsap.from(washiRef.current, {
-          scaleX: 0, transformOrigin: 'left center', duration: 0.45, ease: 'power2.out', delay: 0.5, scrollTrigger: st,
+          scaleX: 0, transformOrigin: 'left center', duration: 0.45, ease: 'power2.out', delay: 0.5, immediateRender: false, scrollTrigger: st,
         })
       }
 
       // 3-7. Content stagger inside panel
       const items = [labelRef.current, para1Ref.current, para2Ref.current, noteRef.current, ctaRef.current].filter(Boolean)
       if (items.length) {
-        gsap.from(items, { y: 30, opacity: 0, stagger: 0.14, duration: 0.65, ease: 'power2.out', delay: 0.55, scrollTrigger: st })
+        gsap.from(items, { y: 30, opacity: 0, stagger: 0.14, duration: 0.65, ease: 'power2.out', delay: 0.55, immediateRender: false, scrollTrigger: st })
       }
 
       // 4. Headline: word-by-word clip reveal
       if (headlineRef.current) {
         gsap.from(headlineRef.current.querySelectorAll('.about-word'), {
-          y: '110%', stagger: 0.08, duration: 0.7, ease: 'power3.out', delay: 0.6, scrollTrigger: st,
+          y: '110%', stagger: 0.08, duration: 0.7, ease: 'power3.out', delay: 0.6, immediateRender: false, scrollTrigger: st,
         })
       }
 
       // 8-10. Polaroid cards: each enters from different direction
       const polSt = { trigger: sectionRef.current, start: 'top bottom', once: true }
       if (polaroidLgRef.current) {
-        gsap.from(polaroidLgRef.current, { x: -50, y: 70, rotation: -12, opacity: 0, duration: 0.95, ease: 'back.out(1.2)', delay: 0.35, scrollTrigger: polSt })
+        gsap.from(polaroidLgRef.current, { x: -50, y: 70, rotation: -12, opacity: 0, duration: 0.95, ease: 'back.out(1.2)', delay: 0.35, immediateRender: false, scrollTrigger: polSt })
       }
       if (polaroidMdRef.current) {
-        gsap.from(polaroidMdRef.current, { x: 50, y: 40, rotation: 12, opacity: 0, duration: 0.95, ease: 'back.out(1.2)', delay: 0.6, scrollTrigger: polSt })
+        gsap.from(polaroidMdRef.current, { x: 50, y: 40, rotation: 12, opacity: 0, duration: 0.95, ease: 'back.out(1.2)', delay: 0.6, immediateRender: false, scrollTrigger: polSt })
       }
       if (polaroidSmRef.current) {
-        gsap.from(polaroidSmRef.current, { y: 90, rotation: 8, opacity: 0, duration: 0.95, ease: 'back.out(1.2)', delay: 0.85, scrollTrigger: polSt })
+        gsap.from(polaroidSmRef.current, { y: 90, rotation: 8, opacity: 0, duration: 0.95, ease: 'back.out(1.2)', delay: 0.85, immediateRender: false, scrollTrigger: polSt })
       }
     })
 
@@ -89,7 +88,7 @@ export function AboutSection() {
           <div className="lg:col-span-7 mb-14 lg:mb-0">
             <div ref={journalRef} className="paper-lines bg-[#D4EDE6] rounded-xl p-6 md:p-10 relative will-change-[clip-path]">
               {/* Washi tape decoration */}
-              <div ref={washiRef} className="absolute -top-3 left-8">
+              <div ref={washiRef} className="absolute top-3 left-8">
                 <WashiTape color="yellow" rotation={-2} width="w-28" />
                 <span className="absolute inset-0 flex items-center justify-center font-handwriting text-dark/80 text-sm pointer-events-none">
                   our story →

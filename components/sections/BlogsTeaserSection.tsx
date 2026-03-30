@@ -4,7 +4,6 @@ import { useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { StampBadge, WashiTape, SectionLabel } from '@/components/ui/scrapbook'
 import { registerGSAP } from '@/lib/animations'
 import { cn } from '@/lib/utils'
@@ -84,14 +83,14 @@ export function BlogsTeaserSection() {
       if (stampRef.current) {
         gsap.from(stampRef.current, {
           scale: 0, rotation: -25, opacity: 0,
-          duration: 0.65, ease: 'back.out(1.8)', scrollTrigger: st,
+          duration: 0.65, ease: 'back.out(1.8)', immediateRender: false, scrollTrigger: st,
         })
       }
 
       // 2. Caption slide up
       if (captionRef.current) {
         gsap.from(captionRef.current, {
-          y: 22, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.25, scrollTrigger: st,
+          y: 22, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.25, immediateRender: false, scrollTrigger: st,
         })
       }
 
@@ -103,6 +102,7 @@ export function BlogsTeaserSection() {
           duration: 0.85,
           ease: 'back.out(1.1)',
           delay: 0.15 + i * 0.15,
+          immediateRender: false,
           scrollTrigger: { trigger: sectionRef.current, start: 'top bottom', once: true },
         })
       })

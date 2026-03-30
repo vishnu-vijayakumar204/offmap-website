@@ -3,7 +3,6 @@
 import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { TornEdge, StampBadge, JournalNote } from '@/components/ui/scrapbook'
 import { registerGSAP } from '@/lib/animations'
 
@@ -28,7 +27,7 @@ export function StudentProgramSection() {
       if (emojiRef.current) {
         gsap.from(emojiRef.current, {
           y: -120, opacity: 0, rotation: -20,
-          duration: 1.0, ease: 'bounce.out', scrollTrigger: st,
+          duration: 1.0, ease: 'bounce.out', immediateRender: false, scrollTrigger: st,
         })
       }
 
@@ -36,14 +35,14 @@ export function StudentProgramSection() {
       if (stampRef.current) {
         gsap.from(stampRef.current, {
           scale: 0, rotation: -200, opacity: 0,
-          duration: 0.75, ease: 'back.out(1.7)', delay: 0.35, scrollTrigger: st,
+          duration: 0.75, ease: 'back.out(1.7)', delay: 0.35, immediateRender: false, scrollTrigger: st,
         })
       }
 
       // 3. Headline: word-by-word reveal
       if (headlineRef.current) {
         gsap.from(headlineRef.current.querySelectorAll('.sp-word'), {
-          y: '110%', stagger: 0.08, duration: 0.7, ease: 'power3.out', delay: 0.55, scrollTrigger: st,
+          y: '110%', stagger: 0.08, duration: 0.7, ease: 'power3.out', delay: 0.55, immediateRender: false, scrollTrigger: st,
         })
       }
 
@@ -51,7 +50,7 @@ export function StudentProgramSection() {
       const items = [bodyRef.current, noteRef.current, btnRef.current].filter(Boolean)
       if (items.length) {
         gsap.from(items, {
-          y: 32, opacity: 0, stagger: 0.15, duration: 0.6, ease: 'power2.out', delay: 0.75, scrollTrigger: st,
+          y: 32, opacity: 0, stagger: 0.15, duration: 0.6, ease: 'power2.out', delay: 0.75, immediateRender: false, scrollTrigger: st,
         })
       }
     })

@@ -3,7 +3,6 @@
 import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { registerGSAP } from '@/lib/animations'
 import { cn } from '@/lib/utils'
 
@@ -28,6 +27,7 @@ export function FinalCtaSection() {
           rotateX: 90, y: 28, opacity: 0,
           stagger: 0.09, duration: 0.65, ease: 'back.out(1.2)',
           transformOrigin: '50% 50% -30px',
+          immediateRender: false,
           scrollTrigger: st,
         })
       }
@@ -39,6 +39,7 @@ export function FinalCtaSection() {
           stagger: 0.09, duration: 0.65, ease: 'back.out(1.2)',
           transformOrigin: '50% 50% -30px',
           delay: 0.3,
+          immediateRender: false,
           scrollTrigger: st,
         })
       }
@@ -46,14 +47,14 @@ export function FinalCtaSection() {
       // 3. Subtext fade up
       if (subRef.current) {
         gsap.from(subRef.current, {
-          y: 20, opacity: 0, duration: 0.55, ease: 'power2.out', delay: 0.65, scrollTrigger: st,
+          y: 20, opacity: 0, duration: 0.55, ease: 'power2.out', delay: 0.65, immediateRender: false, scrollTrigger: st,
         })
       }
 
       // 4. Button scale in with bounce
       if (btnRef.current) {
         gsap.from(btnRef.current, {
-          scale: 0.75, opacity: 0, duration: 0.55, ease: 'back.out(1.7)', delay: 0.85, scrollTrigger: st,
+          scale: 0.75, opacity: 0, duration: 0.55, ease: 'back.out(1.7)', delay: 0.85, immediateRender: false, scrollTrigger: st,
         })
       }
     })

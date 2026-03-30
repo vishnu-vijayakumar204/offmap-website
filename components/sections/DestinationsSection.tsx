@@ -4,7 +4,6 @@ import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { LOCATIONS, REGION_THEMES, type RegionThemeKey } from '@/lib/constants'
 import { TornEdge, WashiTape, SectionLabel } from '@/components/ui/scrapbook'
 import { PostageStamp } from '@/components/ui/scrapbook'
@@ -45,21 +44,21 @@ export function DestinationsSection() {
       // 1. WashiTape: scaleX from 0
       if (washiRef.current) {
         gsap.from(washiRef.current, {
-          scaleX: 0, transformOrigin: 'left center', duration: 0.5, ease: 'power2.out', scrollTrigger: st,
+          scaleX: 0, transformOrigin: 'left center', duration: 0.5, ease: 'power2.out', immediateRender: false, scrollTrigger: st,
         })
       }
 
       // 2. StampBadge: rubber-band spin-in
       if (stampRef.current) {
         gsap.from(stampRef.current, {
-          scale: 0, rotation: -20, opacity: 0, duration: 0.6, ease: 'back.out(1.7)', delay: 0.2, scrollTrigger: st,
+          scale: 0, rotation: -20, opacity: 0, duration: 0.6, ease: 'back.out(1.7)', delay: 0.2, immediateRender: false, scrollTrigger: st,
         })
       }
 
       // 3. Headline: word-by-word clip reveal
       if (headlineRef.current) {
         gsap.from(headlineRef.current.querySelectorAll('.dest-word'), {
-          y: '110%', stagger: 0.1, duration: 0.7, ease: 'power3.out', delay: 0.35, scrollTrigger: st,
+          y: '110%', stagger: 0.1, duration: 0.7, ease: 'power3.out', delay: 0.35, immediateRender: false, scrollTrigger: st,
         })
       }
 
@@ -67,6 +66,7 @@ export function DestinationsSection() {
       if (gridRef.current) {
         gsap.from(gridRef.current.querySelectorAll('.dest-card'), {
           y: 80, opacity: 0, scale: 0.92, stagger: 0.13, duration: 0.7, ease: 'back.out(1.1)',
+          immediateRender: false,
           scrollTrigger: { trigger: gridRef.current, start: 'top bottom', once: true },
         })
       }

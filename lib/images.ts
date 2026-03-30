@@ -12,8 +12,8 @@ const UNSPLASH = {
   rajasthanPalace: 'https://images.unsplash.com/photo-1599661046289-e31897846e41',
   desertDunes: 'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3',
   leopardSafari: 'https://images.unsplash.com/photo-1549366021-9f761d450615',
-  kashmirLandscape: 'https://images.unsplash.com/photo-1588083920840-7c26994d1f4e',
-  kashmirLake: 'https://images.unsplash.com/photo-1609766857897-5a5fc22b8c54',
+  kashmirLandscape: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470',
+  kashmirLake: 'https://images.unsplash.com/photo-1585409677983-0f6c41ca9c3b',
   uttarakhandForest: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
   denseForestTrail: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e',
   villageScene: 'https://images.unsplash.com/photo-1598091383021-15ddea10925d',
@@ -132,6 +132,28 @@ export const ABOUT_IMAGES = {
   large: sized(UNSPLASH.himachalValley, 800),
   medium: sized(UNSPLASH.villageScene, 600),
   small: `${UNSPLASH.uttarakhandForest}?auto=format&fit=crop&w=800&q=80`,
+} as const
+
+// ── Homepage hero image ──────────────────────────────────────────
+export const HOMEPAGE_HERO = sized(UNSPLASH.villageScene, 1920)
+
+// ── Experiences page hero ───────────────────────────────────────
+export const EXPERIENCES_HERO = sized(UNSPLASH.villageScene, 1920)
+
+// ── Experience card images (experiences page) ───────────────────
+export const EXPERIENCE_CARD_IMAGES = {
+  birBarot: sized(UNSPLASH.himachalValley, 600),
+  rajgundhaValley: sized(UNSPLASH.villageScene, 600),
+  shangarhRaghupur: sized(UNSPLASH.localHomestay, 600),
+  paraglidingBir: sized(UNSPLASH.mountainGreenValley, 600),
+  jawaiSafari: sized(UNSPLASH.leopardSafari, 600),
+  udaipurMountAbu: sized(UNSPLASH.tajMahal, 600),
+  jaisalmerDunes: sized(UNSPLASH.desertDunes, 600),
+  horseRiding: sized(UNSPLASH.rajasthanPalace, 600),
+  kasarDeviKhaliya: sized(UNSPLASH.indiaLandmark, 600),
+  binsarWildlife: sized(UNSPLASH.denseForestTrail, 600),
+  dalLake: sized(UNSPLASH.kashmirLake, 600),
+  gulmargSnow: sized(UNSPLASH.kashmirLandscape, 600),
 } as const
 
 // ── Fallback ────────────────────────────────────────────────────

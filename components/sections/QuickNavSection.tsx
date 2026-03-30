@@ -3,7 +3,6 @@
 import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Users, Sun, Compass, BookOpen, type LucideIcon } from 'lucide-react'
 import { SectionLabel } from '@/components/ui/scrapbook'
 import { registerGSAP } from '@/lib/animations'
@@ -39,13 +38,13 @@ export function QuickNavSection() {
 
       // 1. Label: fade up
       if (labelRef.current) {
-        gsap.from(labelRef.current, { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out', scrollTrigger: st })
+        gsap.from(labelRef.current, { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out', immediateRender: false, scrollTrigger: st })
       }
 
       // 2. Headline: word-by-word reveal
       if (headlineRef.current) {
         gsap.from(headlineRef.current.querySelectorAll('.qn-word'), {
-          y: '110%', stagger: 0.09, duration: 0.7, ease: 'power3.out', delay: 0.2, scrollTrigger: st,
+          y: '110%', stagger: 0.09, duration: 0.7, ease: 'power3.out', delay: 0.2, immediateRender: false, scrollTrigger: st,
         })
       }
 
@@ -55,6 +54,7 @@ export function QuickNavSection() {
           y: 60, opacity: 0, scale: 0.88,
           stagger: 0.1, duration: 0.65, ease: 'back.out(1.3)',
           delay: 0.35,
+          immediateRender: false,
           scrollTrigger: st,
         })
       }

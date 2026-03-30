@@ -2,7 +2,6 @@
 
 import { useRef, useEffect } from 'react'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SectionLabel } from '@/components/ui/scrapbook'
 import { registerGSAP } from '@/lib/animations'
 import { cn } from '@/lib/utils'
@@ -71,7 +70,7 @@ export function TestimonialsSection() {
 
       // 1. Label fades up
       if (labelRef.current) {
-        gsap.from(labelRef.current, { y: 24, opacity: 0, duration: 0.55, ease: 'power2.out', scrollTrigger: st })
+        gsap.from(labelRef.current, { y: 24, opacity: 0, duration: 0.55, ease: 'power2.out', immediateRender: false, scrollTrigger: st })
       }
 
       // 2. Each note card enters from its unique origin, settles to its natural rotation
@@ -82,6 +81,7 @@ export function TestimonialsSection() {
           duration: 0.95,
           ease: 'back.out(1.15)',
           delay: 0.2 + i * 0.18,
+          immediateRender: false,
           scrollTrigger: st,
         })
       })

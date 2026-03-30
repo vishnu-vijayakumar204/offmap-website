@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/scrapbook'
 import { ExperienceCard, type ExperienceCardData } from '@/components/ui/ExperienceCard'
 import { cn } from '@/lib/utils'
+import { EXPERIENCE_CARD_IMAGES, EXPERIENCES_HERO } from '@/lib/images'
 
 // ─── Wavy SVG divider ────────────────────────────────────────────────────────
 function WavyDivider({ fill }: { fill: string }) {
@@ -58,7 +59,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '4 days',
     price: '₹8,999',
     description: 'Apple orchards, pine forests and shepherd villages that most maps don\'t show.',
-    image: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.birBarot,
     featured: true,
   },
   {
@@ -69,7 +70,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '3 days',
     price: '₹7,499',
     description: 'Remote valley camping with local shepherd families under open Himalayan skies.',
-    image: 'https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.rajgundhaValley,
   },
   {
     name: 'Shangarh–Raghupur Fort',
@@ -79,7 +80,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '2 days',
     price: '₹5,999',
     description: 'Ancient fort ruins perched above a sacred meadow with Himalayan valley views.',
-    image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.shangarhRaghupur,
   },
   {
     name: 'Paragliding in Bir',
@@ -89,7 +90,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '1 day',
     price: '₹3,499',
     description: 'Tandem paragliding from the world\'s best launch site above the Kangra Valley.',
-    image: 'https://images.unsplash.com/photo-1601024445168-8de05a04a38e?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.paraglidingBir,
   },
   {
     name: 'Jawai Safari',
@@ -99,7 +100,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '3 days',
     price: '₹11,999',
     description: 'Leopard territory, ancient temples and tribal villages off the tourist trail.',
-    image: 'https://images.unsplash.com/photo-1477587458883-47145ed31459?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.jawaiSafari,
   },
   {
     name: 'Udaipur–Mount Abu',
@@ -109,7 +110,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '4 days',
     price: '₹10,999',
     description: 'Lakes, palaces and the only hill station in Rajasthan — slow and real.',
-    image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.udaipurMountAbu,
   },
   {
     name: 'Jaisalmer Dunes',
@@ -119,7 +120,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '3 days',
     price: '₹9,499',
     description: 'Desert camping under a billion stars in the golden heart of the Thar.',
-    image: 'https://images.unsplash.com/photo-1619837374214-0deea4c1d3e4?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.jaisalmerDunes,
   },
   {
     name: 'Horse Riding Workshop',
@@ -129,7 +130,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '1 day',
     price: '₹2,999',
     description: 'Traditional Marwari horse riding with local trainers in the desert heartland.',
-    image: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.horseRiding,
   },
   {
     name: 'Kasar Devi–Khaliya Top',
@@ -139,7 +140,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '5 days',
     price: '₹12,999',
     description: 'Through rhododendron forests to high meadows with sweeping Himalayan panoramas.',
-    image: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.kasarDeviKhaliya,
   },
   {
     name: 'Binsar Wildlife Sanctuary',
@@ -149,7 +150,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '3 days',
     price: '₹8,499',
     description: 'Dense oak forests, Himalayan birds and the quiet chance of spotting a leopard.',
-    image: 'https://images.unsplash.com/photo-1600097454296-12f6d5c3b4d9?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.binsarWildlife,
   },
   {
     name: 'Dal Lake Experience',
@@ -159,7 +160,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '4 days',
     price: 'Coming Soon',
     description: 'Shikara rides through floating gardens, saffron fields and silent mornings.',
-    image: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.dalLake,
     comingSoon: true,
   },
   {
@@ -170,7 +171,7 @@ const EXPERIENCES: ExperienceCardData[] = [
     days: '3 days',
     price: 'Coming Soon',
     description: 'Asia\'s highest gondola and winter trails through untouched snowfields.',
-    image: 'https://images.unsplash.com/photo-1588083920840-7c26994d1f4e?w=600&q=80',
+    image: EXPERIENCE_CARD_IMAGES.gulmargSnow,
     comingSoon: true,
   },
 ]
@@ -288,18 +289,7 @@ export default function ExperiencesPage() {
         tl.from(heroSubRef.current, { y: 20, opacity: 0, duration: 0.55 }, 1.1)
       }
 
-      // ── FILTER BAR: pills cascade in on mount ─────────────────────────────
-      if (filterBarRef.current) {
-        const pills = filterBarRef.current.querySelectorAll('button')
-        gsap.from(pills, {
-          scale: 0.7,
-          opacity: 0,
-          stagger: 0.04,
-          duration: 0.4,
-          ease: 'back.out(1.4)',
-          delay: 1.2,
-        })
-      }
+
 
       // ── FEATURED: clip-path image wipe left → right ───────────────────────
       if (featuredImgRef.current && featuredRef.current) {
@@ -327,7 +317,7 @@ export default function ExperiencesPage() {
             duration: 0.7,
             ease: 'back.out(1.7)',
             delay: 0.6,
-            scrollTrigger: {
+            immediateRender: false, scrollTrigger: {
               trigger: featuredRef.current,
               start: 'top bottom',
               once: true,
@@ -345,7 +335,7 @@ export default function ExperiencesPage() {
           stagger: 0.11,
           duration: 0.65,
           ease: 'power2.out',
-          scrollTrigger: {
+          immediateRender: false, scrollTrigger: {
             trigger: featuredRef.current,
             start: 'top bottom',
             once: true,
@@ -361,7 +351,7 @@ export default function ExperiencesPage() {
           stagger: 0.12,
           duration: 0.6,
           ease: 'power2.out',
-          scrollTrigger: {
+          immediateRender: false, scrollTrigger: {
             trigger: gridHeaderRef.current,
             start: 'top bottom',
             once: true,
@@ -380,7 +370,7 @@ export default function ExperiencesPage() {
             stagger: 0.1,
             duration: 0.6,
             ease: 'power2.out',
-            scrollTrigger: {
+            immediateRender: false, scrollTrigger: {
               trigger: heading,
               start: 'top bottom',
               once: true,
@@ -393,7 +383,7 @@ export default function ExperiencesPage() {
           stagger: 0.07,
           duration: 0.5,
           ease: 'back.out(1.5)',
-          scrollTrigger: {
+          immediateRender: false, scrollTrigger: {
             trigger: carouselRef.current,
             start: 'top bottom',
             once: true,
@@ -414,7 +404,7 @@ export default function ExperiencesPage() {
             rotation: -20,
             duration: 0.9,
             ease: 'bounce.out',
-            scrollTrigger: {
+            immediateRender: false, scrollTrigger: {
               trigger: studentRef.current,
               start: 'top bottom',
               once: true,
@@ -428,7 +418,7 @@ export default function ExperiencesPage() {
             stagger: 0.12,
             duration: 0.65,
             ease: 'power2.out',
-            scrollTrigger: {
+            immediateRender: false, scrollTrigger: {
               trigger: studentRef.current,
               start: 'top bottom',
               once: true,
@@ -442,7 +432,7 @@ export default function ExperiencesPage() {
             stagger: 0.13,
             duration: 0.6,
             ease: 'power2.out',
-            scrollTrigger: {
+            immediateRender: false, scrollTrigger: {
               trigger: studentRef.current,
               start: 'top bottom',
               once: true,
@@ -466,7 +456,7 @@ export default function ExperiencesPage() {
             duration: 0.65,
             ease: 'back.out(1.2)',
             transformOrigin: '50% 50% -30px',
-            scrollTrigger: {
+            immediateRender: false, scrollTrigger: {
               trigger: ctaRef.current,
               start: 'top bottom',
               once: true,
@@ -480,7 +470,7 @@ export default function ExperiencesPage() {
             duration: 0.55,
             delay: 0.35,
             ease: 'power2.out',
-            scrollTrigger: {
+            immediateRender: false, scrollTrigger: {
               trigger: ctaRef.current,
               start: 'top bottom',
               once: true,
@@ -495,7 +485,7 @@ export default function ExperiencesPage() {
             duration: 0.5,
             ease: 'back.out(1.6)',
             delay: 0.5,
-            scrollTrigger: {
+            immediateRender: false, scrollTrigger: {
               trigger: ctaRef.current,
               start: 'top bottom',
               once: true,
@@ -536,7 +526,7 @@ export default function ExperiencesPage() {
         {/* Parallax image wrapper — GSAP moves this independently */}
         <div ref={heroImgRef} className="absolute inset-[-15%] will-change-transform">
           <Image
-            src="https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=1920&q=80"
+            src={EXPERIENCES_HERO}
             alt="Experiences hero"
             fill
             priority
@@ -574,11 +564,11 @@ export default function ExperiencesPage() {
       {/* ════════════════════════════════════════════════════════
           SECTION 2 — FILTER BAR (sticky)
       ════════════════════════════════════════════════════════ */}
-      <div className="sticky top-16 z-40 bg-[#FFF8E7]/95 backdrop-blur-sm border-b border-[#E2E8F0]/50">
-        <div ref={filterBarRef} className="max-w-7xl mx-auto px-4 py-4">
+      <div className="md:sticky md:top-16 z-40 bg-[#FFF8E7] md:bg-[#FFF8E7]/95 md:backdrop-blur-sm border-b border-[#E2E8F0]/50">
+        <div ref={filterBarRef} className="max-w-7xl mx-auto px-4 py-3">
 
           {/* Row 1 — Region */}
-          <div className="flex flex-wrap gap-2 mb-3">
+          <div className="flex gap-2 mb-2 overflow-x-auto md:flex-wrap md:overflow-visible" style={{ scrollbarWidth: 'none' }}>
             {REGIONS.map((r) => {
               const isActive = activeRegion === r.value
               return (
@@ -587,7 +577,7 @@ export default function ExperiencesPage() {
                   onClick={() => setActiveRegion(r.value)}
                   style={isActive ? ({ '--rc': r.primary } as React.CSSProperties) : undefined}
                   className={cn(
-                    'px-4 py-1.5 rounded-full font-body text-sm font-medium transition-all duration-150',
+                    'flex-none px-4 py-1.5 rounded-full font-body text-sm font-medium transition-all duration-150',
                     isActive
                       ? 'bg-[var(--rc)] text-white shadow-sm scale-105'
                       : 'bg-white border-2 border-gray-200 text-dark/70 hover:border-gray-300 hover:scale-105'
@@ -600,7 +590,7 @@ export default function ExperiencesPage() {
           </div>
 
           {/* Row 2 — Type */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex gap-2 overflow-x-auto md:flex-wrap md:overflow-visible" style={{ scrollbarWidth: 'none' }}>
             {[{ label: 'All Types', value: 'all' }, ...ACTIVITY_TYPES.map((a) => ({ label: a.label, value: a.value }))].map(
               (t) => {
                 const isActive = activeType === t.value
@@ -609,7 +599,7 @@ export default function ExperiencesPage() {
                     key={t.value}
                     onClick={() => setActiveType(t.value)}
                     className={cn(
-                      'px-3 py-1 rounded-full font-body text-xs font-medium border-2 transition-all duration-150',
+                      'flex-none px-3 py-1 rounded-full font-body text-xs font-medium border-2 transition-all duration-150',
                       isActive
                         ? 'bg-dark text-white border-dark scale-105'
                         : 'bg-white border-gray-200 text-dark/60 hover:border-gray-300 hover:scale-105'
@@ -627,7 +617,7 @@ export default function ExperiencesPage() {
       {/* ════════════════════════════════════════════════════════
           SECTION 3 — FEATURED EXPERIENCE
       ════════════════════════════════════════════════════════ */}
-      <section ref={featuredRef} className="bg-[#FFF8E7] py-16 md:py-20">
+      <section ref={featuredRef} className="bg-[#FFF8E7] py-10 md:py-20">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 
@@ -703,7 +693,7 @@ export default function ExperiencesPage() {
       {/* ════════════════════════════════════════════════════════
           SECTION 4 — ALL EXPERIENCES GRID
       ════════════════════════════════════════════════════════ */}
-      <section ref={gridRef} className="bg-[#E8F4F0] py-16 md:py-20 scroll-mt-32">
+      <section ref={gridRef} className="bg-[#E8F4F0] py-10 md:py-20 scroll-mt-32">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
 
           {/* Header */}
@@ -753,7 +743,7 @@ export default function ExperiencesPage() {
       {/* ════════════════════════════════════════════════════════
           SECTION 5 — ACTIVITY TYPES CAROUSEL
       ════════════════════════════════════════════════════════ */}
-      <section ref={carouselSectionRef} className="bg-[#FFF8E7] py-16 md:py-20">
+      <section ref={carouselSectionRef} className="bg-[#FFF8E7] py-10 md:py-20">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
 
           <div className="act-heading mb-10">

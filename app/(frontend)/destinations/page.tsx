@@ -142,17 +142,7 @@ export default function DestinationsPage() {
         heroTl.from(heroSubRef.current, { y: 18, opacity: 0, duration: 0.55 }, 1.05)
       }
 
-      // ── FILTER BAR: pills cascade in on mount ─────────────────────────────
-      if (filterBarRef.current) {
-        gsap.from(filterBarRef.current.querySelectorAll('button'), {
-          scale: 0.7,
-          opacity: 0,
-          stagger: 0.05,
-          duration: 0.4,
-          ease: 'back.out(1.4)',
-          delay: 1.2,
-        })
-      }
+
 
       // ── MAP SECTION: text stagger ─────────────────────────────────────────
       if (mapTextRef.current) {
@@ -162,7 +152,7 @@ export default function DestinationsPage() {
           stagger: 0.12,
           duration: 0.65,
           ease: 'power2.out',
-          scrollTrigger: {
+          immediateRender: false, scrollTrigger: {
             trigger: mapSectionRef.current,
             start: 'top bottom',
             once: true,
@@ -177,7 +167,7 @@ export default function DestinationsPage() {
           opacity: 0,
           duration: 0.9,
           ease: 'back.out(1.2)',
-          scrollTrigger: {
+          immediateRender: false, scrollTrigger: {
             trigger: mapSectionRef.current,
             start: 'top bottom',
             once: true,
@@ -193,6 +183,7 @@ export default function DestinationsPage() {
           stagger: 0.07,
           duration: 0.5,
           ease: 'back.out(1.5)',
+          immediateRender: false,
           scrollTrigger: {
             trigger: catSectionRef.current,
             start: 'top bottom',
@@ -262,13 +253,13 @@ export default function DestinationsPage() {
       </section>
 
       {/* ═══ SECTION 2: REGION FILTER TABS ════════════════════════════════════ */}
-      <section className="bg-[#FFF8E7] py-8">
+      <section className="bg-[#FFF8E7] py-4 md:py-8">
         <div ref={filterBarRef} className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex gap-3 overflow-x-auto md:flex-wrap md:justify-center md:overflow-visible" style={{ scrollbarWidth: 'none' }}>
             <button
               onClick={() => setActiveRegion('all')}
               className={cn(
-                'font-body text-sm px-5 py-2 rounded-full border-2 transition-all duration-200 hover:scale-105',
+                'flex-none font-body text-sm px-5 py-2 rounded-full border-2 transition-all duration-200 hover:scale-105',
                 activeRegion === 'all'
                   ? 'bg-dark text-white border-dark scale-105'
                   : 'bg-white text-dark border-gray-200 hover:bg-gray-50'
@@ -291,7 +282,7 @@ export default function DestinationsPage() {
                       : undefined
                   }
                   className={cn(
-                    'font-body text-sm px-5 py-2 rounded-full border-2 transition-all duration-200 hover:scale-105',
+                    'flex-none font-body text-sm px-5 py-2 rounded-full border-2 transition-all duration-200 hover:scale-105',
                     isActive
                       ? 'bg-[var(--rb)] text-white border-[var(--rb)] scale-105'
                       : 'bg-white text-dark border-gray-200 hover:bg-gray-50'
@@ -306,7 +297,7 @@ export default function DestinationsPage() {
       </section>
 
       {/* ═══ SECTION 3: MAP + INTRO ════════════════════════════════════════════ */}
-      <section ref={mapSectionRef} className="bg-[#FFF8E7] py-16 md:py-24">
+      <section ref={mapSectionRef} className="bg-[#FFF8E7] py-10 md:py-24">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
@@ -423,7 +414,7 @@ export default function DestinationsPage() {
       {/* ═══ SECTION 5: REGION SECTIONS ═══════════════════════════════════════ */}
       <section
         ref={cardsSectionRef}
-        className="bg-[#FFF8E7] py-16 md:py-24 scroll-mt-16"
+        className="bg-[#FFF8E7] py-10 md:py-24 scroll-mt-16"
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-12">

@@ -4,7 +4,6 @@ import { useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PolaroidCard } from '@/components/ui/scrapbook'
 import { registerGSAP } from '@/lib/animations'
 import { cn } from '@/lib/utils'
@@ -45,7 +44,7 @@ export function StaysTeaserSection() {
       // 2. Headline: word-by-word reveal
       if (headlineRef.current) {
         gsap.from(headlineRef.current.querySelectorAll('.stays-word'), {
-          y: '110%', stagger: 0.07, duration: 0.75, ease: 'power3.out', scrollTrigger: st,
+          y: '110%', stagger: 0.07, duration: 0.75, ease: 'power3.out', immediateRender: false, scrollTrigger: st,
         })
       }
 
@@ -62,6 +61,7 @@ export function StaysTeaserSection() {
             ...polaroidFrom[i],
             duration: 0.9, ease: 'back.out(1.2)',
             delay: 0.15 + i * 0.18,
+            immediateRender: false,
             scrollTrigger: st,
           })
         }
@@ -72,7 +72,7 @@ export function StaysTeaserSection() {
       if (textItems.length) {
         gsap.from(textItems, {
           y: 28, opacity: 0, stagger: 0.18, duration: 0.6, ease: 'power2.out',
-          delay: 0.7, scrollTrigger: st,
+          delay: 0.7, immediateRender: false, scrollTrigger: st,
         })
       }
 
