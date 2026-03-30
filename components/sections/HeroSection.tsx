@@ -9,6 +9,7 @@ import { SearchBar } from '@/components/ui/SearchBar'
 import { TornEdge } from '@/components/ui/scrapbook'
 import { cn } from '@/lib/utils'
 import { registerGSAP, EASE_OUT } from '@/lib/animations'
+import { HOMEPAGE_HERO } from '@/lib/images'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -169,7 +170,7 @@ export function HeroSection() {
         className="absolute inset-0 scale-[1.3] will-change-transform"
       >
         <Image
-          src="/hero.jpeg"
+          src={HOMEPAGE_HERO}
           alt="Mountain landscape in Himachal Pradesh"
           fill
           priority

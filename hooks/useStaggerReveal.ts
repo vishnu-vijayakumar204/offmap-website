@@ -19,7 +19,7 @@ export function useStaggerReveal(
     stagger = 0.12,
     y = 24,
     duration = 0.5,
-    start = 'top 90%',
+    start = 'top bottom',
   } = options
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export function useStaggerReveal(
     const ctx = gsap.context(() => {
       gsap.fromTo(
         children,
-        { opacity: 0, y },
+        { opacity: 0, y, immediateRender: false },
         {
           opacity: 1,
           y: 0,
@@ -46,7 +46,7 @@ export function useStaggerReveal(
           scrollTrigger: {
             trigger: container,
             start,
-            toggleActions: 'play none none none',
+            once: true,
           },
         }
       )

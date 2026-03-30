@@ -1,8 +1,10 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   Mountain,
   Tent,
@@ -15,6 +17,7 @@ import {
 import { LOCATIONS, REGION_THEMES, type RegionThemeKey } from '@/lib/constants'
 import { WashiTape, SectionLabel, PostageStamp } from '@/components/ui/scrapbook'
 import { IndiaMap } from '@/components/ui/IndiaMap'
+import { registerGSAP } from '@/lib/animations'
 import { cn } from '@/lib/utils'
 import { RegionSection, REGION_EXPERIENCES } from '@/components/sections/RegionSection'
 import { HERO_IMAGES } from '@/lib/images'
@@ -61,24 +64,39 @@ interface Category {
 }
 
 const CATEGORIES: Category[] = [
-  { label: 'Trekking', icon: Mountain, color: '#2D6A4F', bg: '#D4EDE6', href: '/experiences?type=trekking' },
-  { label: 'Camping', icon: Tent, color: '#6B4226', bg: '#E8D5C4', href: '/experiences?type=camping' },
-  { label: 'Culture', icon: Palette, color: '#C1440E', bg: '#F5D0C4', href: '/experiences?type=culture' },
-  { label: 'Stays', icon: Home, color: '#1B4FD8', bg: '#D4DFFF', href: '/stays' },
-  { label: 'Activities', icon: Zap, color: '#F59E0B', bg: '#FEF3C7', href: '/experiences?type=activities' },
-  { label: 'Learning', icon: GraduationCap, color: '#7C3AED', bg: '#EDE9FE', href: '/student-program' },
+  { label: 'Trekking',   icon: Mountain,      color: '#2D6A4F', bg: '#D4EDE6', href: '/experiences?type=trekking' },
+  { label: 'Camping',    icon: Tent,           color: '#6B4226', bg: '#E8D5C4', href: '/experiences?type=camping' },
+  { label: 'Culture',    icon: Palette,        color: '#C1440E', bg: '#F5D0C4', href: '/experiences?type=culture' },
+  { label: 'Stays',      icon: Home,           color: '#1B4FD8', bg: '#D4DFFF', href: '/stays' },
+  { label: 'Activities', icon: Zap,            color: '#F59E0B', bg: '#FEF3C7', href: '/experiences?type=activities' },
+  { label: 'Learning',   icon: GraduationCap,  color: '#7C3AED', bg: '#EDE9FE', href: '/student-program' },
 ]
-
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function DestinationsPage() {
   const [activeRegion, setActiveRegion] = useState<string>('all')
   const cardsSectionRef = useRef<HTMLElement>(null)
 
+  // Animation refs
+  const heroRef         = useRef<HTMLElement>(null)
+  const heroImgRef      = useRef<HTMLDivElement>(null)
+  const heroLabelRef    = useRef<HTMLSpanElement>(null)
+  const heroTitleRef    = useRef<HTMLHeadingElement>(null)
+  const heroSubRef      = useRef<HTMLParagraphElement>(null)
+  const filterBarRef    = useRef<HTMLDivElement>(null)
+  const mapSectionRef   = useRef<HTMLElement>(null)
+  const mapTextRef      = useRef<HTMLDivElement>(null)
+  const mapContainerRef = useRef<HTMLDivElement>(null)
+  const catSectionRef   = useRef<HTMLElement>(null)
+  const catTilesRef     = useRef<HTMLDivElement>(null)
+
   const filteredLocations =
     activeRegion === 'all'
       ? [...LOCATIONS]
       : LOCATIONS.filter((l) => l.slug === activeRegion)
+
+  // Suppress unused variable warning — filteredLocations is available for future use
+  void filteredLocations
 
   const handleRegionFilter = (slug: string) => {
     setActiveRegion(slug)
@@ -87,29 +105,133 @@ export default function DestinationsPage() {
     }, 80)
   }
 
+  useEffect(() => {
+    registerGSAP()
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
+
+    const ctx = gsap.context(() => {
+
+      // ── HERO: parallax ────────────────────────────────────────────────────
+      if (heroImgRef.current && heroRef.current) {
+        gsap.to(heroImgRef.current, {
+          yPercent: 25,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1.2,
+          },
+        })
+      }
+
+      // ── HERO: text entrance ───────────────────────────────────────────────
+      const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+      if (heroLabelRef.current) {
+        heroTl.from(heroLabelRef.current, { y: 20, opacity: 0, duration: 0.5 }, 0.3)
+      }
+      if (heroTitleRef.current) {
+        heroTl.from(
+          heroTitleRef.current.querySelectorAll('.dest-hero-word'),
+          { y: '110%', stagger: 0.1, duration: 0.75 },
+          0.55
+        )
+      }
+      if (heroSubRef.current) {
+        heroTl.from(heroSubRef.current, { y: 18, opacity: 0, duration: 0.55 }, 1.05)
+      }
+
+
+
+      // ── MAP SECTION: text stagger ─────────────────────────────────────────
+      if (mapTextRef.current) {
+        gsap.from(mapTextRef.current.children, {
+          y: 36,
+          opacity: 0,
+          stagger: 0.12,
+          duration: 0.65,
+          ease: 'power2.out',
+          immediateRender: false, scrollTrigger: {
+            trigger: mapSectionRef.current,
+            start: 'top bottom',
+            once: true,
+          },
+        })
+      }
+
+      // ── MAP: scale + fade in ──────────────────────────────────────────────
+      if (mapContainerRef.current) {
+        gsap.from(mapContainerRef.current, {
+          scale: 0.88,
+          opacity: 0,
+          duration: 0.9,
+          ease: 'back.out(1.2)',
+          immediateRender: false, scrollTrigger: {
+            trigger: mapSectionRef.current,
+            start: 'top bottom',
+            once: true,
+          },
+        })
+      }
+
+      // ── CATEGORY TILES: bounce scale in ──────────────────────────────────
+      if (catTilesRef.current) {
+        gsap.from(catTilesRef.current.querySelectorAll('.cat-tile'), {
+          scale: 0,
+          opacity: 0,
+          stagger: 0.07,
+          duration: 0.5,
+          ease: 'back.out(1.5)',
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: catSectionRef.current,
+            start: 'top bottom',
+            once: true,
+          },
+        })
+      }
+
+    })
+
+    return () => ctx.revert()
+  }, [])
+
   return (
     <main>
 
       {/* ═══ SECTION 1: HERO ═══════════════════════════════════════════════════ */}
-      <section className="relative h-[60vh] min-h-[400px] overflow-hidden">
-        <Image
-          src={HERO_IMAGES['himachal-pradesh']}
-          alt="Himalayan landscape"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
+      <section ref={heroRef} className="relative h-[60vh] min-h-[400px] overflow-hidden">
+        <div ref={heroImgRef} className="absolute inset-[-12%] will-change-transform">
+          <Image
+            src={HERO_IMAGES['himachal-pradesh']}
+            alt="Himalayan landscape"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60" />
 
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
-          <span className="font-handwriting text-yellow text-xl mb-3 block">
+          <span ref={heroLabelRef} className="font-handwriting text-yellow text-xl mb-3 block">
             explore india differently
           </span>
-          <h1 className="font-display font-black text-white text-4xl md:text-6xl lg:text-7xl leading-tight">
-            Pick Your Direction
+          <h1
+            ref={heroTitleRef}
+            className="font-display font-black text-white text-4xl md:text-6xl lg:text-7xl leading-tight"
+          >
+            {['Pick', 'Your', 'Direction'].map((w) => (
+              <span
+                key={w}
+                className="inline-block overflow-hidden align-bottom mr-[0.22em] last:mr-0"
+              >
+                <span className="dest-hero-word inline-block">{w}</span>
+              </span>
+            ))}
           </h1>
-          <p className="font-body text-white/80 text-lg max-w-2xl mx-auto mt-4">
+          <p ref={heroSubRef} className="font-body text-white/80 text-lg max-w-2xl mx-auto mt-4">
             Destinations we&apos;ve lived and explored before offering them to you.
           </p>
         </div>
@@ -131,15 +253,15 @@ export default function DestinationsPage() {
       </section>
 
       {/* ═══ SECTION 2: REGION FILTER TABS ════════════════════════════════════ */}
-      <section className="bg-[#FFF8E7] py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-3">
+      <section className="bg-[#FFF8E7] py-4 md:py-8">
+        <div ref={filterBarRef} className="max-w-7xl mx-auto px-4">
+          <div className="flex gap-3 overflow-x-auto md:flex-wrap md:justify-center md:overflow-visible" style={{ scrollbarWidth: 'none' }}>
             <button
               onClick={() => setActiveRegion('all')}
               className={cn(
-                'font-body text-sm px-5 py-2 rounded-full border-2 transition-colors duration-200',
+                'flex-none font-body text-sm px-5 py-2 rounded-full border-2 transition-all duration-200 hover:scale-105',
                 activeRegion === 'all'
-                  ? 'bg-dark text-white border-dark'
+                  ? 'bg-dark text-white border-dark scale-105'
                   : 'bg-white text-dark border-gray-200 hover:bg-gray-50'
               )}
             >
@@ -160,9 +282,9 @@ export default function DestinationsPage() {
                       : undefined
                   }
                   className={cn(
-                    'font-body text-sm px-5 py-2 rounded-full border-2 transition-colors duration-200',
+                    'flex-none font-body text-sm px-5 py-2 rounded-full border-2 transition-all duration-200 hover:scale-105',
                     isActive
-                      ? 'bg-[var(--rb)] text-white border-[var(--rb)]'
+                      ? 'bg-[var(--rb)] text-white border-[var(--rb)] scale-105'
                       : 'bg-white text-dark border-gray-200 hover:bg-gray-50'
                   )}
                 >
@@ -175,12 +297,12 @@ export default function DestinationsPage() {
       </section>
 
       {/* ═══ SECTION 3: MAP + INTRO ════════════════════════════════════════════ */}
-      <section className="bg-[#FFF8E7] py-16 md:py-24">
+      <section ref={mapSectionRef} className="bg-[#FFF8E7] py-10 md:py-24">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
             {/* LEFT — Text + Region pills */}
-            <div className="relative">
+            <div ref={mapTextRef} className="relative">
               <div className="absolute -top-2 right-4 z-10 hidden lg:block">
                 <PostageStamp region="himachal-pradesh" />
               </div>
@@ -229,17 +351,19 @@ export default function DestinationsPage() {
             </div>
 
             {/* RIGHT — India map */}
-            <IndiaMap
-              activeRegion={activeRegion}
-              onRegionClick={handleRegionFilter}
-            />
+            <div ref={mapContainerRef} className="will-change-transform">
+              <IndiaMap
+                activeRegion={activeRegion}
+                onRegionClick={handleRegionFilter}
+              />
+            </div>
 
           </div>
         </div>
       </section>
 
       {/* ═══ SECTION 4: EXPERIENCE CATEGORIES ═════════════════════════════════ */}
-      <section className="bg-[#E8F4F0]">
+      <section ref={catSectionRef} className="bg-[#E8F4F0]">
         <WavyDivider fill="#FFF8E7" position="top" />
 
         <div className="max-w-7xl mx-auto px-4 py-12 md:py-16">
@@ -252,7 +376,7 @@ export default function DestinationsPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div ref={catTilesRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {CATEGORIES.map((cat) => {
               const Icon = cat.icon
               return (
@@ -263,9 +387,9 @@ export default function DestinationsPage() {
                     { '--cat': cat.color, '--cat-bg': cat.bg } as React.CSSProperties
                   }
                   className={cn(
-                    'group bg-white rounded-2xl p-6 text-center block',
+                    'cat-tile group bg-white rounded-2xl p-6 text-center block',
                     'shadow-[var(--shadow-card)]',
-                    'hover:-translate-y-1 hover:shadow-[var(--shadow-polaroid)]',
+                    'hover:-translate-y-1.5 hover:shadow-[var(--shadow-polaroid)]',
                     'transition-all duration-200'
                   )}
                 >
@@ -290,7 +414,7 @@ export default function DestinationsPage() {
       {/* ═══ SECTION 5: REGION SECTIONS ═══════════════════════════════════════ */}
       <section
         ref={cardsSectionRef}
-        className="bg-[#FFF8E7] py-16 md:py-24 scroll-mt-16"
+        className="bg-[#FFF8E7] py-10 md:py-24 scroll-mt-16"
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-12">

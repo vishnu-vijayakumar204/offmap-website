@@ -14,7 +14,10 @@ export function useLenis(): void {
       '(prefers-reduced-motion: reduce)'
     ).matches
 
-    if (prefersReducedMotion) return
+    if (prefersReducedMotion) {
+      ScrollTrigger.refresh()
+      return
+    }
 
     const lenis = new Lenis({
       lerp: 0.1,
@@ -24,7 +27,7 @@ export function useLenis(): void {
       infinite: false,
     })
 
-    lenis.on('scroll', ScrollTrigger.update)
+    lenis.on('scroll', () => ScrollTrigger.update())
 
     function onTick(time: number): void {
       lenis.raf(time * 1000)
@@ -32,6 +35,10 @@ export function useLenis(): void {
 
     gsap.ticker.add(onTick)
     gsap.ticker.lagSmoothing(0)
+
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh()
+    })
 
     return () => {
       lenis.destroy()
