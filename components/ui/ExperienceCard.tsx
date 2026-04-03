@@ -49,6 +49,7 @@ export function ExperienceCard({
         comingSoon && 'opacity-70',
         className
       )}
+      style={{ borderLeft: `4px solid ${primary}` }}
     >
       {/* ── Image ── */}
       <div className="relative h-48 overflow-hidden">
@@ -95,7 +96,7 @@ export function ExperienceCard({
               '--tag-color': primary,
             } as React.CSSProperties
           }
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[var(--tag-bg)] mb-2"
+          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[var(--tag-bg)] border border-[var(--tag-color)] mb-2"
         >
           <span className="text-xs leading-none">{emoji}</span>
           <span

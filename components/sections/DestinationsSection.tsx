@@ -114,13 +114,18 @@ export function DestinationsSection() {
               <Link
                 key={location.slug}
                 href={`/destinations/${location.slug}`}
-                style={{ '--card-r': rotation, '--border-c': theme.primary } as React.CSSProperties}
+                style={{
+                  '--card-r': rotation,
+                  '--border-c': theme.primary,
+                  '--card-bg': theme.cardBg,
+                  '--shadow-h': theme.primary + '40',
+                } as React.CSSProperties}
                 className={cn(
-                  'dest-card group block bg-white',
+                  'dest-card group block bg-[var(--card-bg)]',
                   'border-2 border-[var(--border-c)]',
                   'rotate-[var(--card-r)] hover:rotate-0 hover:scale-[1.02]',
                   'transition-all duration-300',
-                  'shadow-[2px_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[4px_4px_20px_rgba(0,0,0,0.15)]',
+                  'shadow-[2px_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[4px_4px_20px_var(--shadow-h)]',
                   offset
                 )}
               >
