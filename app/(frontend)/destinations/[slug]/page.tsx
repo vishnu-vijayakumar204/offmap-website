@@ -18,6 +18,7 @@ import { REGION_EXPERIENCES } from '@/components/sections/RegionSection'
 import type { Experience } from '@/components/sections/RegionSection'
 import { cn } from '@/lib/utils'
 import { HERO_IMAGES, POLAROID_IMAGES, EXPERIENCE_IMAGES, FALLBACK_IMAGE } from '@/lib/images'
+import { getExperienceIcon } from '@/lib/icons'
 import { useRef, useState, useCallback } from 'react'
 
 // ─── Per-region intro subtitles ───────────────────────────────────────────────
@@ -43,22 +44,22 @@ const INTRO_BODY: Record<string, string> = {
 // ─── Per-region activities ────────────────────────────────────────────────────
 interface Activity {
   label: string
-  emoji: string
+  icon: string
 }
 
 const ACTIVITIES: Record<string, Activity[]> = {
   'himachal-pradesh': [
-    { label: 'Paragliding', emoji: '🪂' },
-    { label: 'Cycling', emoji: '🚴' },
-    { label: 'Day Hikes', emoji: '🥾' },
-    { label: 'Learn Paragliding', emoji: '✈️' },
+    { label: 'Paragliding',      icon: '/icons/adventure.png'  },
+    { label: 'Cycling',          icon: '/icons/activities.png' },
+    { label: 'Day Hikes',        icon: '/icons/hiking.png'     },
+    { label: 'Learn Paragliding',icon: '/icons/learning.png'   },
   ],
   rajasthan: [
-    { label: 'Miniature Painting', emoji: '🎨' },
-    { label: 'Horse Riding', emoji: '🐎' },
-    { label: 'Cooking Workshop', emoji: '🍳' },
-    { label: 'Yoga', emoji: '🧘' },
-    { label: 'Run + Hike', emoji: '🏃' },
+    { label: 'Miniature Painting', icon: '/icons/cultural.png'   },
+    { label: 'Horse Riding',       icon: '/icons/activities.png' },
+    { label: 'Cooking Workshop',   icon: '/icons/cultural.png'   },
+    { label: 'Yoga',               icon: '/icons/stays.png'      },
+    { label: 'Run + Hike',         icon: '/icons/hiking.png'     },
   ],
   kashmir: [],
   uttarakhand: [],
@@ -394,11 +395,14 @@ export default function DestinationDetailPage({
                     'transition-all duration-200'
                   )}
                 >
-                  <div
-                    className="w-14 h-14 rounded-full mx-auto mb-3 flex items-center justify-center"
-                    style={{ backgroundColor: theme.bg }}
-                  >
-                    <span className="text-2xl">{act.emoji}</span>
+                  <div className="w-14 h-14 mx-auto mb-3 flex items-center justify-center">
+                    <Image
+                      src={act.icon}
+                      alt={act.label}
+                      width={48}
+                      height={48}
+                      className="object-contain mix-blend-multiply"
+                    />
                   </div>
                   <p className="font-heading font-semibold text-dark text-xs leading-tight">
                     {act.label}

@@ -5,18 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import {
-  Mountain,
-  Tent,
-  Landmark,
-  Binoculars,
-  Zap,
-  Home,
-  Star,
-  BookOpen,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { getExperienceIcon } from '@/lib/icons'
 import { REGION_THEMES, LOCATIONS, type RegionThemeKey } from '@/lib/constants'
 import { registerGSAP } from '@/lib/animations'
 import {
@@ -178,14 +168,14 @@ const EXPERIENCES: ExperienceCardData[] = [
 
 // ─── Activity types carousel ──────────────────────────────────────────────────
 const ACTIVITY_TYPES = [
-  { label: 'Trekking',   value: 'trekking',   icon: Mountain,  color: '#2D6A4F', bg: '#E8F5EE' },
-  { label: 'Camping',    value: 'camping',    icon: Tent,      color: '#6B4226', bg: '#EBE0D5' },
-  { label: 'Cultural',   value: 'cultural',   icon: Landmark,  color: '#C1440E', bg: '#FBE9DC' },
-  { label: 'Wildlife',   value: 'wildlife',   icon: Binoculars,color: '#F59E0B', bg: '#FFF3CD' },
-  { label: 'Adventure',  value: 'adventure',  icon: Zap,       color: '#1B4FD8', bg: '#EEF2FF' },
-  { label: 'Stays',      value: 'stays',      icon: Home,      color: '#7C3AED', bg: '#F3E8FF' },
-  { label: 'Activities', value: 'activities', icon: Star,      color: '#0D9488', bg: '#CCFBF1' },
-  { label: 'Learning',   value: 'learning',   icon: BookOpen,  color: '#B45309', bg: '#FFFDE8' },
+  { label: 'Trekking',   value: 'trekking',   color: '#2D6A4F' },
+  { label: 'Camping',    value: 'camping',    color: '#6B4226' },
+  { label: 'Cultural',   value: 'cultural',   color: '#C1440E' },
+  { label: 'Wildlife',   value: 'wildlife',   color: '#F59E0B' },
+  { label: 'Adventure',  value: 'adventure',  color: '#1B4FD8' },
+  { label: 'Stays',      value: 'stays',      color: '#7C3AED' },
+  { label: 'Activities', value: 'activities', color: '#0D9488' },
+  { label: 'Learning',   value: 'learning',   color: '#B45309' },
 ] as const
 
 // ─── Region filter list ───────────────────────────────────────────────────────
@@ -789,7 +779,6 @@ export default function ExperiencesPage() {
               }
             >
               {ACTIVITY_TYPES.map((act) => {
-                const Icon     = act.icon
                 const isActive = activeType === act.value
                 return (
                   <button
@@ -799,7 +788,6 @@ export default function ExperiencesPage() {
                       {
                         scrollSnapAlign: 'start',
                         '--act-color': act.color,
-                        '--act-bg': act.bg,
                       } as React.CSSProperties
                     }
                     className={cn(
@@ -811,15 +799,18 @@ export default function ExperiencesPage() {
                       isActive && 'ring-2 ring-[var(--act-color)] ring-offset-2 -translate-y-1'
                     )}
                   >
-                    <div
-                      style={{ backgroundColor: act.bg }}
-                      className={cn(
-                        'w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-2',
-                        'transition-transform duration-200',
-                        isActive && 'scale-110'
-                      )}
-                    >
-                      <Icon size={24} style={{ color: act.color }} />
+                    <div className={cn(
+                      'w-16 h-16 mx-auto rounded-2xl bg-white p-2 shadow-[var(--shadow-card)] mb-2',
+                      'transition-transform duration-200',
+                      isActive && 'scale-110'
+                    )}>
+                      <Image
+                        src={getExperienceIcon(act.value)}
+                        alt={act.label}
+                        width={64}
+                        height={64}
+                        className="w-full h-full object-contain mix-blend-multiply"
+                      />
                     </div>
                     <p
                       style={{ color: isActive ? act.color : undefined }}

@@ -2,8 +2,8 @@
 
 import { useRef, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { gsap } from 'gsap'
-import { Users, Sun, Compass, BookOpen, type LucideIcon } from 'lucide-react'
 import { SectionLabel } from '@/components/ui/scrapbook'
 import { registerGSAP } from '@/lib/animations'
 import { cn } from '@/lib/utils'
@@ -11,15 +11,15 @@ import { cn } from '@/lib/utils'
 interface NavTile {
   label: string
   href: string
-  icon: LucideIcon
+  icon: string
   borderColor: string
 }
 
 const TILES: NavTile[] = [
-  { label: 'Group Trips',     href: '/experiences/group-trips', icon: Users,    borderColor: '#1B4FD8' },
-  { label: 'Day Trips',       href: '/experiences/day-trips',   icon: Sun,      borderColor: '#FFD60A' },
-  { label: 'Activities',      href: '/experiences/activities',  icon: Compass,  borderColor: '#2D6A4F' },
-  { label: 'Student Program', href: '/student-program',         icon: BookOpen, borderColor: '#F59E0B' },
+  { label: 'Group Trips',     href: '/experiences/group-trips', icon: '/icons/hiking.png',     borderColor: '#1B4FD8' },
+  { label: 'Day Trips',       href: '/experiences/day-trips',   icon: '/icons/adventure.png',  borderColor: '#FFD60A' },
+  { label: 'Activities',      href: '/experiences/activities',  icon: '/icons/activities.png', borderColor: '#2D6A4F' },
+  { label: 'Student Program', href: '/student-program',         icon: '/icons/learning.png',   borderColor: '#F59E0B' },
 ]
 
 export function QuickNavSection() {
@@ -91,7 +91,6 @@ export function QuickNavSection() {
 
         <div ref={cardsRef} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {TILES.map((tile) => {
-            const Icon = tile.icon
             return (
               <Link
                 key={tile.label}
@@ -104,7 +103,15 @@ export function QuickNavSection() {
                   'transition-all duration-200'
                 )}
               >
-                <Icon size={32} className="text-yellow mb-4 transition-transform duration-200 group-hover:scale-110" />
+                <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-4 transition-transform duration-200 group-hover:scale-110">
+                  <Image
+                    src={tile.icon}
+                    alt={tile.label}
+                    width={40}
+                    height={40}
+                    className="object-contain mix-blend-multiply"
+                  />
+                </div>
                 <p className="font-heading font-semibold text-white text-base mb-4">{tile.label}</p>
                 <span className="text-yellow text-lg group-hover:translate-x-2 inline-block transition-transform duration-200">→</span>
               </Link>
