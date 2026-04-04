@@ -35,7 +35,7 @@ export const BLOG_POSTS: BlogPost[] = [
     regionSlug: 'rajasthan',
     date: 'February 8, 2025',
     readTime: '5 min read',
-    image: 'https://images.unsplash.com/photo-1477587458883-47145ed31459?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?w=800&q=80',
     featured: false,
   },
   {
@@ -74,7 +74,7 @@ export const BLOG_POSTS: BlogPost[] = [
     regionSlug: 'uttarakhand',
     date: 'November 5, 2024',
     readTime: '5 min read',
-    image: 'https://images.unsplash.com/photo-1600097454296-12f6d5c3b4d9?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
     featured: false,
   },
   {

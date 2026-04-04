@@ -28,7 +28,7 @@ export function BlogCard({ post, large = false, tilt, className }: BlogCardProps
   return (
     <article
       className={cn(
-        'group bg-white rounded-2xl overflow-hidden',
+        'group bg-white rounded-2xl overflow-hidden h-full flex flex-col',
         'shadow-[var(--shadow-card)]',
         'hover:-translate-y-1 hover:shadow-[var(--shadow-polaroid)]',
         'transition-all duration-200',
@@ -37,11 +37,11 @@ export function BlogCard({ post, large = false, tilt, className }: BlogCardProps
         className
       )}
     >
-      <Link href={`/blogs/${post.slug}`} className="block">
+      <Link href={`/blogs/${post.slug}`} className="block flex flex-col h-full min-h-0">
         <div
           className={cn(
-            'relative w-full overflow-hidden bg-gray-100',
-            large ? 'h-64' : 'h-48'
+            'relative w-full shrink-0 overflow-hidden bg-gray-100',
+            large ? 'h-64 md:h-72' : 'h-52 md:h-56'
           )}
         >
           <Image
@@ -62,7 +62,7 @@ export function BlogCard({ post, large = false, tilt, className }: BlogCardProps
           ) : null}
         </div>
 
-        <div className={cn(large ? 'p-6' : 'p-4')}>
+        <div className={cn('flex flex-col flex-1 min-h-0', large ? 'p-6' : 'p-4')}>
           <p className="font-handwriting text-xs text-gray-400 leading-tight">
             {metaLine}
           </p>

@@ -212,11 +212,11 @@ export default function BlogsPage() {
   return (
     <main>
       {/* SECTION 1 — Corkboard hero */}
-      <section className="bg-[#F5F0E8] overflow-visible">
+      <section className="bg-[#F5F0E8] overflow-x-hidden overflow-y-visible">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
           <div
             ref={heroCollageRef}
-            className="relative h-64 md:h-80 mb-10 md:mb-14 mx-auto max-w-5xl"
+            className="relative min-h-[17rem] h-[17rem] md:min-h-[22rem] md:h-[22rem] mb-12 md:mb-16 mx-auto max-w-5xl"
           >
             {POLAROID_LAYOUT.map((cfg) => {
               const post = BLOG_POSTS[cfg.i]
@@ -257,7 +257,7 @@ export default function BlogsPage() {
       {/* SECTION 2 — Featured */}
       <section ref={featuredRef} className="bg-[#EFF6FF] py-12 md:py-20 relative">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="relative grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-center">
+          <div className="relative grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 lg:items-start">
             <div className="featured-animate lg:col-span-3 relative h-80 rounded-2xl overflow-hidden shadow-[var(--shadow-card)]">
               <Image
                 src={featured.image}
@@ -276,9 +276,16 @@ export default function BlogsPage() {
               <div className="absolute bottom-4 left-4 z-10">
                 <StampBadge text="Featured Story" color="#0F172A" rotation={-2} />
               </div>
+              <div className="hidden md:block absolute top-4 right-4 z-20 max-w-[9rem]">
+                <JournalNote
+                  text="our favourite one this month 📌"
+                  type="sticky"
+                  className="rotate-[5deg] shadow-[var(--shadow-polaroid)] w-auto min-w-0"
+                />
+              </div>
             </div>
 
-            <div className="lg:col-span-2 flex flex-col gap-3">
+            <div className="lg:col-span-2 flex flex-col gap-3 lg:pt-1">
               <div className="featured-animate">
                 <SectionLabel text="Editor's Pick" style="stamp" />
               </div>
@@ -315,14 +322,13 @@ export default function BlogsPage() {
               >
                 Read the Story →
               </Link>
-            </div>
-
-            <div className="hidden md:block absolute -right-2 top-4 lg:top-12 z-20">
-              <JournalNote
-                text="our favourite one this month 📌"
-                type="sticky"
-                className="rotate-[6deg] shadow-[var(--shadow-polaroid)]"
-              />
+              <div className="featured-animate md:hidden mt-6 flex justify-center">
+                <JournalNote
+                  text="our favourite one this month 📌"
+                  type="sticky"
+                  className="rotate-[3deg] shadow-[var(--shadow-polaroid)]"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -376,7 +382,7 @@ export default function BlogsPage() {
               />
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
               {filteredPosts.map((post, index) => (
                 <BlogCard
                   key={post.slug}
