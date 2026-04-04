@@ -19,18 +19,19 @@ import {
 import { BlogCard } from '@/components/ui/BlogCard'
 import { cn } from '@/lib/utils'
 
+/** Wrappers center each card on a lane across the row (no empty middle). Polaroid rotation stays on the card. */
 const POLAROID_LAYOUT: {
   i: number
   rotation: number
   size: 'sm' | 'md'
   washi?: 'yellow' | 'blue' | 'pink'
-  className: string
+  wrapperClassName: string
 }[] = [
-  { i: 0, rotation: -6, size: 'sm', washi: 'yellow', className: 'absolute left-0 top-8 z-10' },
-  { i: 1, rotation: 3, size: 'md', washi: 'blue', className: 'absolute left-[8%] top-0 z-20 md:left-[14%]' },
-  { i: 2, rotation: -2, size: 'md', className: 'absolute right-[4%] top-10 z-10 md:right-[8%]' },
-  { i: 3, rotation: 5, size: 'sm', washi: 'pink', className: 'absolute left-[20%] bottom-0 z-30 md:left-[28%]' },
-  { i: 4, rotation: -3, size: 'sm', className: 'absolute right-0 top-2 z-20' },
+  { i: 0, rotation: -6, size: 'sm', washi: 'yellow', wrapperClassName: 'absolute left-[6%] top-7 z-10 -translate-x-1/2' },
+  { i: 1, rotation: 3, size: 'md', washi: 'blue', wrapperClassName: 'absolute left-[26%] top-0 z-20 -translate-x-1/2' },
+  { i: 2, rotation: -2, size: 'md', wrapperClassName: 'absolute left-[48%] top-14 z-[15] -translate-x-1/2' },
+  { i: 3, rotation: 5, size: 'sm', washi: 'pink', wrapperClassName: 'absolute left-[68%] bottom-0 z-30 -translate-x-1/2' },
+  { i: 4, rotation: -3, size: 'sm', wrapperClassName: 'absolute left-[82%] top-7 z-20 -translate-x-1/2' },
 ]
 
 const POLAROID_CAPTIONS = [
@@ -222,16 +223,17 @@ export default function BlogsPage() {
               const post = BLOG_POSTS[cfg.i]
               if (!post) return null
               return (
-                <PolaroidCard
-                  key={post.slug}
-                  src={post.image}
-                  alt={post.title}
-                  caption={POLAROID_CAPTIONS[cfg.i] ?? post.title}
-                  rotation={cfg.rotation}
-                  size={cfg.size}
-                  washiColor={cfg.washi}
-                  className={cn('blog-polaroid', cfg.className)}
-                />
+                <div key={post.slug} className={cfg.wrapperClassName}>
+                  <PolaroidCard
+                    src={post.image}
+                    alt={post.title}
+                    caption={POLAROID_CAPTIONS[cfg.i] ?? post.title}
+                    rotation={cfg.rotation}
+                    size={cfg.size}
+                    washiColor={cfg.washi}
+                    className="blog-polaroid"
+                  />
+                </div>
               )
             })}
           </div>
