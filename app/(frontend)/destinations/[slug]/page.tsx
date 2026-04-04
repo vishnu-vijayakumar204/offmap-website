@@ -18,6 +18,7 @@ import { REGION_EXPERIENCES } from '@/components/sections/RegionSection'
 import type { Experience } from '@/components/sections/RegionSection'
 import { cn } from '@/lib/utils'
 import { HERO_IMAGES, POLAROID_IMAGES, EXPERIENCE_IMAGES, FALLBACK_IMAGE } from '@/lib/images'
+import { getExperienceIcon } from '@/lib/icons'
 import { useRef, useState, useCallback } from 'react'
 
 // ─── Per-region intro subtitles ───────────────────────────────────────────────
@@ -43,22 +44,22 @@ const INTRO_BODY: Record<string, string> = {
 // ─── Per-region activities ────────────────────────────────────────────────────
 interface Activity {
   label: string
-  emoji: string
+  icon: string
 }
 
 const ACTIVITIES: Record<string, Activity[]> = {
   'himachal-pradesh': [
-    { label: 'Paragliding', emoji: '🪂' },
-    { label: 'Cycling', emoji: '🚴' },
-    { label: 'Day Hikes', emoji: '🥾' },
-    { label: 'Learn Paragliding', emoji: '✈️' },
+    { label: 'Paragliding',      icon: '/icons/adventure.png'  },
+    { label: 'Cycling',          icon: '/icons/activities.png' },
+    { label: 'Day Hikes',        icon: '/icons/hiking.png'     },
+    { label: 'Learn Paragliding',icon: '/icons/learning.png'   },
   ],
   rajasthan: [
-    { label: 'Miniature Painting', emoji: '🎨' },
-    { label: 'Horse Riding', emoji: '🐎' },
-    { label: 'Cooking Workshop', emoji: '🍳' },
-    { label: 'Yoga', emoji: '🧘' },
-    { label: 'Run + Hike', emoji: '🏃' },
+    { label: 'Miniature Painting', icon: '/icons/cultural.png'   },
+    { label: 'Horse Riding',       icon: '/icons/activities.png' },
+    { label: 'Cooking Workshop',   icon: '/icons/cultural.png'   },
+    { label: 'Yoga',               icon: '/icons/stays.png'      },
+    { label: 'Run + Hike',         icon: '/icons/hiking.png'     },
   ],
   kashmir: [],
   uttarakhand: [],
@@ -119,7 +120,7 @@ function SlugExperienceCard({
   return (
     <Link
       href={`/destinations/${region}`}
-      style={{ scrollSnapAlign: 'start' } as React.CSSProperties}
+      style={{ scrollSnapAlign: 'start', borderLeft: `4px solid ${theme.primary}` } as React.CSSProperties}
       className={cn(
         'flex-shrink-0 w-64 md:w-72 rounded-2xl overflow-hidden bg-white',
         'shadow-[var(--shadow-card)] hover:-translate-y-1 hover:shadow-[var(--shadow-polaroid)]',
@@ -212,7 +213,12 @@ export default function DestinationDetailPage({
           className="object-cover"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/70" />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(to bottom, ${theme.primary}BB 0%, ${theme.primary}55 40%, rgba(0,0,0,0.72) 100%)`,
+          }}
+        />
 
         {/* PostageStamp top-right */}
         <div className="absolute top-6 right-6 z-10">
@@ -236,7 +242,8 @@ export default function DestinationDetailPage({
           <div className="flex flex-wrap gap-4">
             <Link
               href={`#experiences`}
-              className="font-body font-semibold text-dark bg-yellow px-6 py-3 border-2 border-dark inline-block hover:bg-yellow/90 transition-colors duration-200"
+              className="font-body font-semibold px-6 py-3 border-2 inline-block transition-colors duration-200 hover:opacity-90"
+              style={{ backgroundColor: theme.primary, borderColor: theme.primary, color: '#ffffff' }}
             >
               Explore Experiences
             </Link>
@@ -263,7 +270,10 @@ export default function DestinationDetailPage({
             {/* LEFT — text */}
             <div>
               <SectionLabel text="about this region" style="handwritten" className="block mb-5" />
-              <h2 className="font-display font-bold text-dark text-3xl md:text-4xl leading-tight mb-5">
+              <h2
+                className="font-display font-bold text-3xl md:text-4xl leading-tight mb-5"
+                style={{ color: theme.primary }}
+              >
                 {introSubtitle}
               </h2>
               <p className="font-body text-dark/60 text-base leading-relaxed mb-8">
@@ -385,7 +395,15 @@ export default function DestinationDetailPage({
                     'transition-all duration-200'
                   )}
                 >
-                  <span className="text-3xl block mb-2">{act.emoji}</span>
+                  <div className="w-14 h-14 mx-auto mb-3 flex items-center justify-center">
+                    <Image
+                      src={act.icon}
+                      alt={act.label}
+                      width={48}
+                      height={48}
+                      className="object-contain mix-blend-multiply"
+                    />
+                  </div>
                   <p className="font-heading font-semibold text-dark text-xs leading-tight">
                     {act.label}
                   </p>
@@ -421,7 +439,8 @@ export default function DestinationDetailPage({
           </p>
           <Link
             href={`/contact?destination=${slug}`}
-            className="font-body font-semibold text-dark bg-white px-8 py-4 border-2 border-white inline-block hover:bg-transparent hover:text-white transition-colors duration-300"
+            className="font-body font-semibold bg-white px-8 py-4 border-2 border-white inline-block hover:bg-transparent hover:!text-white transition-colors duration-300 text-[var(--cta-c)]"
+            style={{ '--cta-c': theme.primary } as React.CSSProperties}
           >
             Plan My {theme.name} Trip
           </Link>

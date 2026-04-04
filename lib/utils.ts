@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { REGION_THEMES, type RegionThemeKey } from '@/lib/constants'
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs))
@@ -59,4 +60,8 @@ const DEFAULT_ACCENT: LocationAccent = LOCATION_ACCENTS['himachal-pradesh']
 
 export function getLocationAccent(slug: string): LocationAccent {
   return LOCATION_ACCENTS[slug] ?? DEFAULT_ACCENT
+}
+
+export function getRegionTheme(slug: string) {
+  return REGION_THEMES[slug as RegionThemeKey] ?? REGION_THEMES['himachal-pradesh']
 }

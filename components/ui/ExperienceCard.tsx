@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { MapPin } from 'lucide-react'
 import { REGION_THEMES, type RegionThemeKey } from '@/lib/constants'
 import { StampBadge } from '@/components/ui/scrapbook'
+import { getExperienceIcon } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 
 export interface ExperienceCardData {
@@ -49,6 +50,7 @@ export function ExperienceCard({
         comingSoon && 'opacity-70',
         className
       )}
+      style={{ borderLeft: `4px solid ${primary}` }}
     >
       {/* ── Image ── */}
       <div className="relative h-48 overflow-hidden">
@@ -67,7 +69,16 @@ export function ExperienceCard({
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-300" />
 
         {/* Type badge */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+          {!comingSoon && (
+            <Image
+              src={getExperienceIcon(type)}
+              alt={type}
+              width={16}
+              height={16}
+              className="mix-blend-multiply"
+            />
+          )}
           <StampBadge
             text={comingSoon ? 'Coming Soon' : type}
             color={comingSoon ? '#94A3B8' : primary}
@@ -95,7 +106,7 @@ export function ExperienceCard({
               '--tag-color': primary,
             } as React.CSSProperties
           }
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[var(--tag-bg)] mb-2"
+          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[var(--tag-bg)] border border-[var(--tag-color)] mb-2"
         >
           <span className="text-xs leading-none">{emoji}</span>
           <span

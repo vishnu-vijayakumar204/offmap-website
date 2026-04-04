@@ -185,7 +185,7 @@ export function RegionSection({ region, experiences }: RegionSectionProps) {
             >
               {theme.name}
             </h2>
-            <p className="font-handwriting text-gray-500 text-lg mt-1">
+            <p className="font-handwriting text-lg mt-1" style={{ color: theme.primary }}>
               {theme.label}
             </p>
           </div>
