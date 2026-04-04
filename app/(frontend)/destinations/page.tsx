@@ -5,16 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import {
-  Mountain,
-  Tent,
-  Palette,
-  Home,
-  Zap,
-  GraduationCap,
-  type LucideIcon,
-} from 'lucide-react'
 import { LOCATIONS, REGION_THEMES, type RegionThemeKey } from '@/lib/constants'
+import { getExperienceIcon } from '@/lib/icons'
 import { WashiTape, SectionLabel, PostageStamp } from '@/components/ui/scrapbook'
 import { IndiaMap } from '@/components/ui/IndiaMap'
 import { registerGSAP } from '@/lib/animations'
@@ -57,19 +49,18 @@ function WavyDivider({
 // ─── Experience categories ────────────────────────────────────────────────────
 interface Category {
   label: string
-  icon: LucideIcon
+  iconKey: string
   color: string
-  bg: string
   href: string
 }
 
 const CATEGORIES: Category[] = [
-  { label: 'Trekking',   icon: Mountain,      color: '#2D6A4F', bg: '#D4EDE6', href: '/experiences?type=trekking' },
-  { label: 'Camping',    icon: Tent,           color: '#6B4226', bg: '#E8D5C4', href: '/experiences?type=camping' },
-  { label: 'Culture',    icon: Palette,        color: '#C1440E', bg: '#F5D0C4', href: '/experiences?type=culture' },
-  { label: 'Stays',      icon: Home,           color: '#1B4FD8', bg: '#D4DFFF', href: '/stays' },
-  { label: 'Activities', icon: Zap,            color: '#F59E0B', bg: '#FEF3C7', href: '/experiences?type=activities' },
-  { label: 'Learning',   icon: GraduationCap,  color: '#7C3AED', bg: '#EDE9FE', href: '/student-program' },
+  { label: 'Trekking',   iconKey: 'trekking',   color: '#2D6A4F', href: '/experiences?type=trekking' },
+  { label: 'Camping',    iconKey: 'camping',     color: '#6B4226', href: '/experiences?type=camping' },
+  { label: 'Culture',    iconKey: 'culture',     color: '#C1440E', href: '/experiences?type=culture' },
+  { label: 'Stays',      iconKey: 'stays',       color: '#1B4FD8', href: '/stays' },
+  { label: 'Activities', iconKey: 'activities',  color: '#F59E0B', href: '/experiences?type=activities' },
+  { label: 'Learning',   iconKey: 'learning',    color: '#7C3AED', href: '/student-program' },
 ]
 
 // ─── Main page ────────────────────────────────────────────────────────────────
@@ -377,34 +368,31 @@ export default function DestinationsPage() {
           </div>
 
           <div ref={catTilesRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {CATEGORIES.map((cat) => {
-              const Icon = cat.icon
-              return (
-                <Link
-                  key={cat.label}
-                  href={cat.href}
-                  style={
-                    { '--cat': cat.color, '--cat-bg': cat.bg } as React.CSSProperties
-                  }
-                  className={cn(
-                    'cat-tile group bg-white rounded-2xl p-6 text-center block',
-                    'shadow-[var(--shadow-card)]',
-                    'hover:-translate-y-1.5 hover:shadow-[var(--shadow-polaroid)]',
-                    'transition-all duration-200'
-                  )}
-                >
-                  <div className="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center bg-[var(--cat-bg)] group-hover:bg-[var(--cat)] transition-colors duration-200">
-                    <Icon
-                      size={28}
-                      className="text-[var(--cat)] group-hover:text-white transition-colors duration-200"
-                    />
-                  </div>
-                  <p className="font-heading font-semibold text-dark text-sm">
-                    {cat.label}
-                  </p>
-                </Link>
-              )
-            })}
+            {CATEGORIES.map((cat) => (
+              <Link
+                key={cat.label}
+                href={cat.href}
+                className={cn(
+                  'cat-tile group bg-white rounded-2xl p-6 text-center block',
+                  'shadow-[var(--shadow-card)]',
+                  'hover:-translate-y-1.5 hover:shadow-[var(--shadow-polaroid)]',
+                  'transition-all duration-200'
+                )}
+              >
+                <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                  <Image
+                    src={getExperienceIcon(cat.iconKey)}
+                    alt={cat.label}
+                    width={48}
+                    height={48}
+                    className="object-contain mix-blend-multiply"
+                  />
+                </div>
+                <p className="font-heading font-semibold text-dark text-sm">
+                  {cat.label}
+                </p>
+              </Link>
+            ))}
           </div>
         </div>
 
