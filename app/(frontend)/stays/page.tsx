@@ -70,7 +70,7 @@ const STAYS: Stay[] = [
     ],
     pricePerNight: '₹3,200',
     capacity: '2-6 guests',
-    image: 'https://images.unsplash.com/photo-1477587458883-47145ed31459?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=800&q=80',
   },
   {
     slug: 'forest-camp-uttarakhand',
@@ -88,7 +88,7 @@ const STAYS: Stay[] = [
     ],
     pricePerNight: '₹1,800',
     capacity: '2-8 guests',
-    image: 'https://images.unsplash.com/photo-1600097454296-12f6d5c3b4d9?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1504851149312-7a075b496cc7?w=800&q=80',
   },
   {
     slug: 'valley-view-shangarh',
